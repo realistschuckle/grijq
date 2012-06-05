@@ -1,0 +1,11 @@
+{
+  "name": "grijq",
+  "version": "0.1.0",
+  "dependencies": {
+    "socket.io": "*",
+    "raphael": "*",
+    "flatiron": "*",
+    "union": "*",
+    "director": "*"
+  }
+}
