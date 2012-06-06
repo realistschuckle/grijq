@@ -1,17 +1,87 @@
+<!DOCTYPE html>
 <html>
   <head>
     <title>grijq</title>
     <link rel="stylesheet" type="text/css" href="cssreset-min.css">
     <link rel="stylesheet" type="text/css" href="jquery-ui-1.8.20.css">
+    <link rel="stylesheet" type="text/css" href="cssfonts-min.css">
+    <link rel="stylesheet" type="text/css" href="jquery.ui.grijq.css">
     <script src="jquery-1.7.2.min.js"></script>
     <script src="jquery-ui-1.8.20.min.js"></script>
+    <script src="jquery.ui.grijq.js"></script>
+    <script>
+      $(function() {
+        $('#inline-data').grijq();
+      });
+    </script>
   </head>
   <body>
     <div>
-      <table id="inline-data">
+      <table id="inline-data" width="1400">
+        <col width="100">
+        <col width="100">
+        <col width="100">
+        <col width="100">
+        <col width="100">
+        <col width="100">
+        <col width="100">
+        <col width="100">
+        <col width="100">
+        <col width="100">
+        <col width="100">
+        <col width="100">
+        <col width="100">
+        <col width="100">
         <thead>
           <tr>
-            <th></th>
+            <th data-index="0"><div unselectable="on">Ticket #</div></th>
+            <th data-index="1"><div unselectable="on">Closing Date</div></th>
+            <th data-index="2"><div unselectable="on">Location</div></th>
+            <th data-index="3"><div unselectable="on">Lease</div></th>
+            <th data-index="4"><div unselectable="on">Tank</div></th>
+            <th data-index="5"><div unselectable="on">Carrier</div></th>
+            <th data-index="6"><div unselectable="on">Product</div></th>
+            <th data-index="7"><div unselectable="on">Obs. Gravity</div></th>
+            <th data-index="8"><div unselectable="on">Obs. Temp</div></th>
+            <th data-index="9"><div unselectable="on">BS&amp;W</div></th>
+            <th data-index="10"><div unselectable="on">1st Reading (&prime; &Prime;)</div></th>
+            <th data-index="11"><div unselectable="on">1st Temp</div></th>
+            <th data-index="12"><div unselectable="on">2nd Reading (&prime; &Prime;)</div></th>
+            <th data-index="13"><div unselectable="on">2nd Temp</div></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><div>01010</div></td>
+            <td><div>2/2/2012</div></td>
+            <td><div>8065 - Roehrs</div></td>
+            <td><div>446003 - BROWN FEDERAL 6-15</div></td>
+            <td><div>11396-400</div></td>
+            <td><div>Me</div></td>
+            <td><div>GS</div></td>
+            <td><div>24.5</div></td>
+            <td><div>81</div></td>
+            <td><div>.018</div></td>
+            <td><div>18&prime; 9&Prime;</div></td>
+            <td><div>81</div></td>
+            <td><div>1&prime; 4&Prime;</div></td>
+            <td><div>76</div></td>
+          </tr>
+          <tr>
+            <td><div>01010</div></td>
+            <td><div>2/2/2012</div></td>
+            <td><div>8065 - Roehrs</div></td>
+            <td><div>446003 - BROWN FEDERAL 6-15</div></td>
+            <td><div>11396-400</div></td>
+            <td><div>Me</div></td>
+            <td><div>GS</div></td>
+            <td><div>24.5</div></td>
+            <td><div>81</div></td>
+            <td><div>.018</div></td>
+            <td><div>18&prime; 9&Prime;</div></td>
+            <td><div>81</div></td>
+            <td><div>1&prime; 4&Prime;</div></td>
+            <td><div>76</div></td>
           </tr>
         </thead>
       </table>

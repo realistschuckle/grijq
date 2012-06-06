@@ -1,0 +1,73 @@
+.unselectable {
+  -moz-user-select: -moz-none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+} 
+
+.grijq-wrapper {
+  overflow: auto;
+}
+
+.grijq-wrapper .resizer {
+  background-color: gray;
+  position: absolute;
+  display: none;
+  top: 0;
+  left: 0;
+  width: 4px;
+}
+
+.ui-widget.grijq {
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.ui-widget.grijq .ui-widget-header {
+  cursor: default;
+}
+
+.ui-widget.grijq .ui-widget-header .mover {
+  display: inline-block;
+  text-indent: -1000000px;
+  padding: 2px 3px;
+  *width: 4px;
+  *float: left;
+  cursor: col-resize;
+}
+
+.ui-widget.grijq .ui-widget-content {
+  background-image: none;
+  background-repeat: repeat;
+  background-position: 0% 0%;
+  background-color: transparent;
+}
+
+.ui-widget.grijq tr {
+  border: inherit;
+}
+
+.ui-widget.grijq .ui-widget-content td {
+  border: inherit;
+  padding: 2px 6px;
+  white-space: nowrap;
+}
+
+.ui-widget.grijq .ui-widget-header th {
+  border: inherit;
+  font-weight: bold;
+  white-space: nowrap;
+  padding: 2px 6px 2px 0;
+}
+
+.ui-widget.grijq .ui-widget-content td div,
+.ui-widget.grijq .ui-widget-header th div {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ui-widget.grijq .ui-widget-content .td-text {
+  padding: 2px 6px;
+}
+
