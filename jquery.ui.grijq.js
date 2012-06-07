@@ -2,48 +2,72 @@
   $.widget("curtissimo.grijq", {
     options: {},
     _create: function() {
-      var getCol = function(offset) {
-        offset = offset || 0;
-        var index = $(this).attr('data-index');
-        if(!index) {
-          index = parseInt($(this).parents('[data-index]').attr('data-index'));
-        }
-        return $($('colgroup col', grijq.element).get(index - offset));
-      };
+      var grijq = this
+        , ie = (!+'\v1')
+        , minWidth = ie? 1 : 0
+        , getCol = function(offset, table) {
+                     offset = offset || 0;
+                     var index = $(this).attr('data-index');
+                     if(!index) {
+                       index = parseInt($(this).parents('[data-index]').attr('data-index'));
+                     }
+                     return $($('col', table).get(index - offset));
+                   }
+        ;
 
-      var grijq = this;
       grijq.wrapper = grijq.element.wrap('<div class="grijq-wrapper">').parent();
-      grijq.element.addClass('ui-widget grijq');
-      $('thead th', grijq.element).addClass('unselectable')
-                                  .hover(function() {$(this).addClass('ui-state-hover')}, function() {$(this).removeClass('ui-state-hover')})
-                                  .click(function() {
-                                    if(grijq['selectedColumn']) {
-                                      grijq['selectedHeader'].removeClass('ui-state-active');
-                                      grijq['selectedColumn'].css('background-color', '');
-                                    }
-                                    grijq['selectedHeader'] = $(this).addClass('ui-state-active');
-                                    var col = getCol.apply(this);
-                                    col.css('background-color', '#E3F1FA');
-                                    grijq['selectedColumn'] = col;
-                                  })
-                                  .children().prepend($('<span>').addClass('mover').html('.').attr('unselectable', 'on'));
+      grijq.headerTable = $('<table>').prop('width', grijq.element.prop('width'))
+                                      .addClass('ui-widget grijq')
+                                      .append($('<colgroup>').append($('col', grijq.element).clone()))
+                                      .append($('thead', grijq.element));
+      grijq.wrapper.prepend(grijq.headerTable);
+      grijq.element.addClass('ui-widget grijq')
+                   .click(function(e) {
+                     grijq._clearSelection();
+                     grijq['selectedCell'] = $(e.target).closest('td').css('background-color', '#E3F1FA');
+                   });
+      $('thead th', grijq.headerTable).addClass('unselectable')
+                                      .hover(function() {$(this).addClass('ui-state-hover')}, function() {$(this).removeClass('ui-state-hover')})
+                                      .click(function() {
+                                        grijq._clearSelection();
+                                        grijq['selectedHeader'] = $(this).addClass('ui-state-active');
+                                        var col = getCol.call(this, 0, grijq.element);
+                                        col.css('background-color', '#E3F1FA');
+                                        grijq['selectedColumn'] = col;
+                                      })
+                                      .children().prepend($('<span>').addClass('mover').html('.').attr('unselectable', 'on'));
       $('tbody', grijq.element).addClass('ui-widget-content');
-      $('thead', grijq.element).addClass('ui-widget-header ui-state-default');
-      $('.mover', grijq.element).draggable({
+      $('thead', grijq.headerTable).addClass('ui-widget-header ui-state-default');
+      $('.mover', grijq.headerTable).draggable({
         axis: 'x',
         helper: function() {
-                  grijq.columnResizer.height(grijq.element.height());
+                  grijq.columnResizer.height(grijq.element.height() + grijq.headerTable.height());
                   return grijq.columnResizer.show()[0];
                 },
         stop: function(event, ui) {
                 var offset = ui.position.left - ui.originalPosition.left;
-                var col = getCol.call(this, 1);
-                col.prop('width', offset + parseInt(col.prop('width')));
-                grijq.element.prop('width', offset + parseInt(grijq.element.prop('width')));
+                var col = getCol.call(this, 1, grijq.element);
+                var newColWidth = Math.max(minWidth, offset + parseInt(col.prop('width')));
+                col.prop('width', newColWidth);
+                col = getCol.call(this, 1, grijq.headerTable);
+                col.prop('width', newColWidth);
+
+                var newTableWidth = Math.max(minWidth, offset + parseInt(grijq.element.prop('width')));
+                grijq.element.prop('width', newTableWidth);
+                grijq.headerTable.prop('width', newTableWidth);
               }
       });
       grijq.columnResizer = $('<div>').addClass('resizer');
       grijq.wrapper.append(grijq.columnResizer);
+    },
+    _clearSelection: function() {
+      if(this['selectedColumn']) {
+        this['selectedHeader'].removeClass('ui-state-active');
+        this['selectedColumn'].css('background-color', '');
+      }
+      if(this['selectedCell']) {
+        this['selectedCell'].css('background-color', '');
+      }
     },
     _setOption: function(key, value) {
       $.Widget.prototype._setOption.apply(this, arguments);

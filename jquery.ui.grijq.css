@@ -42,6 +42,7 @@
   background-repeat: repeat;
   background-position: 0% 0%;
   background-color: transparent;
+  border-top: none;
 }
 
 .ui-widget.grijq tr {
@@ -52,6 +53,7 @@
   border: inherit;
   padding: 2px 6px;
   white-space: nowrap;
+  cursor: default;
 }
 
 .ui-widget.grijq .ui-widget-header th {
@@ -66,8 +68,3 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
-.ui-widget.grijq .ui-widget-content .td-text {
-  padding: 2px 6px;
-}
-
