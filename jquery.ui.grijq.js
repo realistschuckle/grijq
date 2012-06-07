@@ -1,6 +1,9 @@
 (function($) {
   $.widget("curtissimo.grijq", {
-    options: {},
+    options: {
+      width: 'auto',
+      height: 'auto'
+    },
     _create: function() {
       var grijq = this
         , ie = (!+'\v1')
@@ -15,7 +18,7 @@
                    }
         ;
 
-      grijq.wrapper = grijq.element.wrap('<div class="grijq-wrapper">').parent();
+      grijq.wrapper = grijq.element.wrap('<div class="grijq-wrapper">').parent().width(this.options.width);
       grijq.headerTable = $('<table>').prop('width', grijq.element.prop('width'))
                                       .addClass('ui-widget grijq')
                                       .append($('<colgroup>').append($('col', grijq.element).clone()))
@@ -24,15 +27,20 @@
       grijq.element.addClass('ui-widget grijq')
                    .click(function(e) {
                      grijq._clearSelection();
-                     grijq['selectedCell'] = $(e.target).closest('td').css('background-color', '#E3F1FA');
+                     grijq['selectedCell'] = $(e.target).closest('td').addClass('ui-state-default');
                    });
+      grijq.verticalScroller = $('<div>').addClass('grijq-vertical')
+                                         .width(parseInt(grijq.element.prop('width')) + 16)
+                                         .height(this.options.height);
+      grijq.element.wrap(grijq.verticalScroller);
+      grijq.verticalScroller = grijq.element.parent();
       $('thead th', grijq.headerTable).addClass('unselectable')
                                       .hover(function() {$(this).addClass('ui-state-hover')}, function() {$(this).removeClass('ui-state-hover')})
                                       .click(function() {
                                         grijq._clearSelection();
                                         grijq['selectedHeader'] = $(this).addClass('ui-state-active');
                                         var col = getCol.call(this, 0, grijq.element);
-                                        col.css('background-color', '#E3F1FA');
+                                        col.addClass('ui-state-default');
                                         grijq['selectedColumn'] = col;
                                       })
                                       .children().prepend($('<span>').addClass('mover').html('.').attr('unselectable', 'on'));
@@ -55,6 +63,7 @@
                 var newTableWidth = Math.max(minWidth, offset + parseInt(grijq.element.prop('width')));
                 grijq.element.prop('width', newTableWidth);
                 grijq.headerTable.prop('width', newTableWidth);
+                grijq.verticalScroller.width(newTableWidth + 16);
               }
       });
       grijq.columnResizer = $('<div>').addClass('resizer');
@@ -63,10 +72,10 @@
     _clearSelection: function() {
       if(this['selectedColumn']) {
         this['selectedHeader'].removeClass('ui-state-active');
-        this['selectedColumn'].css('background-color', '');
+        this['selectedColumn'].removeClass('ui-state-default');
       }
       if(this['selectedCell']) {
-        this['selectedCell'].css('background-color', '');
+        this['selectedCell'].removeClass('ui-state-default');
       }
     },
     _setOption: function(key, value) {
