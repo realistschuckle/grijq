@@ -1,4 +1,9 @@
 (function($) {
+  var LEFT = 37
+    , UP = 38
+    , RIGHT = 39
+    , DOWN = 40
+    ;
   $.widget("curtissimo.grijq", {
     options: {
       width: 'auto',
@@ -18,6 +23,10 @@
                    }
         ;
 
+      $('td', grijq.element).focus(function(e) {
+                              grijq._clearSelection();
+                              grijq['selectedCell'] = $(e.target).closest('td').addClass('ui-state-default');
+                            }).genid();
       grijq.wrapper = grijq.element.wrap('<div class="grijq-wrapper">').parent().width(this.options.width);
       grijq.headerTable = $('<table>').prop('width', grijq.element.prop('width'))
                                       .addClass('ui-widget grijq')
@@ -27,7 +36,7 @@
       grijq.element.addClass('ui-widget grijq')
                    .click(function(e) {
                      grijq._clearSelection();
-                     grijq['selectedCell'] = $(e.target).closest('td').addClass('ui-state-default');
+                     grijq['selectedCell'] = $(e.target).closest('td').addClass('ui-state-default').trigger('focus');
                    });
       grijq.verticalScroller = $('<div>').addClass('grijq-vertical')
                                          .width(parseInt(grijq.element.prop('width')) + 16)
@@ -68,6 +77,29 @@
       });
       grijq.columnResizer = $('<div>').addClass('resizer');
       grijq.wrapper.append(grijq.columnResizer);
+      grijq.element.keydown(function(e) {
+        var target = $(e.target);
+        switch(e.keyCode) {
+          case LEFT:
+            target.prev().focus();
+            e.preventDefault();
+            break;
+          case RIGHT:
+            target.next().focus();
+            e.preventDefault();
+            break;
+          case UP:
+            var index = $(target).prevAll().length + 1;
+            $(':nth-child(' + index + ')', target.closest('tr').prev()).focus();
+            e.preventDefault();
+            break;
+          case DOWN:
+            var index = $(target).prevAll().length + 1;
+            $(':nth-child(' + index + ')', target.closest('tr').next()).focus();
+            e.preventDefault();
+            break;
+        }
+      });
     },
     _clearSelection: function() {
       if(this['selectedColumn']) {
