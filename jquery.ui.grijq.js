@@ -27,7 +27,7 @@
                               grijq._clearSelection();
                               grijq['selectedCell'] = $(e.target).closest('td').addClass('ui-state-default');
                             }).genid();
-      grijq.wrapper = grijq.element.wrap('<div class="grijq-wrapper">').parent().width(this.options.width);
+      grijq.wrapper = grijq.element.wrap('<div class="grijq-wrapper">').parent().width(this.options.width + 16);
       grijq.headerTable = $('<table>').prop('width', grijq.element.prop('width'))
                                       .addClass('ui-widget grijq')
                                       .append($('<colgroup>').append($('col', grijq.element).clone()))
