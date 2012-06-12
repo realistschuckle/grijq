@@ -79,7 +79,6 @@
                                         return;
                                       }
                                       if((e.keyCode < ZERO || e.keyCode > NINE) && (e.keyCode < NUM_ZERO || e.keyCode > NUM_NINE) && e.keyCode !== DOT && e.keyCode !== DASH && e.keyCode !== NUM_DOT) {
-                                        console.log(e.keyCode);
                                         e.preventDefault();
                                       }
                                     });
