@@ -20,7 +20,7 @@
     , editing = false
     , editors = {
         'date': {
-          'edit': function(target) {
+          'edit': function(target, options) {
             target.addClass('editing');
             var input = $('<input>').val(target.text()).width(target.width());
             target.html('').append(input);
@@ -47,6 +47,31 @@
             date = $.datepicker.formatDate('m/d/yy', date);
             input.remove();
             setTimeout(function() {target.html('<div>' + date + '</div>')}, 0);
+          }
+        },
+        'autocomplete': {
+          'edit': function(target, options) {
+            target.addClass('editing');
+            var input = $('<input>').val(target.text()).width(target.width());
+            var source = options['source'];
+            if(typeof window[source] !== undefined) {
+              source = window[source];
+            }
+            input.autocomplete({source: source});
+            target.html('').append(input);
+            input.select();
+            input.focus();
+          },
+          'unedit': function(target) {
+            editing = false;
+            target.removeClass('editing');
+            var input = target.children().first();
+            if(input.length === 0) {
+              return;
+            }
+            var text = input.val();
+            input.remove();
+            setTimeout(function() {target.html('<div>' + text + '</div>')}, 0);
           }
         },
         'text': {
@@ -103,8 +128,17 @@
         var t = $(this).text()
           , f = +t
           , d = new Date(t)
+          , spec = $(this).attr('data-type')
           ;
-        if(!isNaN(d.getTime()) && isNaN(f)) {
+        if(spec) {
+          var data = $(this).data()
+            , t = {'type': spec, 'options': {}}
+            ;
+          for(var i in data) {
+            t.options[i] = data[i];
+          }
+          return t;
+        } else if(!isNaN(d.getTime()) && isNaN(f)) {
           return {'type': 'date'};
         } else if(!isNaN(f)) {
           return {'type': 'number'};
@@ -133,39 +167,32 @@
                      return $($('col', table).get(index - offset));
                    }
         ;
-
-      $('td', grijq.element).focus(function(e) {
-                               var cell = $(e.target).closest('td');
-                               if(grijq['selectedCell'] && grijq['selectedCell'].length && cell.length && grijq['selectedCell'][0] === cell[0]) {
-                                 return;
-                               }
-                               grijq._clearSelection();
-                               grijq['selectedCell'] = cell.addClass('ui-state-default');
-                               if(ie) {
-                                 clearTimeout(iefocus);
-                                 iefocus = setTimeout(function() {cell.focus();}, 100);
-                               }
-                            }).genid();
-      grijq.wrapper = grijq.element.wrap('<div class="grijq-wrapper">').parent().width(this.options.width + 16);
-      grijq.headerTable = $('<table>').prop('width', grijq.element.prop('width'))
-                                      .addClass('ui-widget grijq')
-                                      .append($('<colgroup>').append($('col', grijq.element).clone()))
-                                      .append($('thead', grijq.element));
-      grijq.wrapper.prepend(grijq.headerTable);
-      grijq.element.addClass('ui-widget grijq')
-                   .click(function(e) {
-                     var cell = $(e.target).closest('td');
-                     if(grijq['selectedCell'] && grijq['selectedCell'].length && cell.length && grijq['selectedCell'][0] === cell[0]) {
-                       return;
-                     }
-                     grijq._clearSelection();
-                     grijq['selectedCell'] = cell.addClass('ui-state-default').trigger('focus');
-                   });
-      grijq.verticalScroller = $('<div>').addClass('grijq-vertical')
-                                         .width(parseInt(grijq.element.prop('width')) + 16)
-                                         .height(this.options.height);
-      grijq.element.wrap(grijq.verticalScroller);
-      grijq.verticalScroller = grijq.element.parent();
+      grijq.headerTable = grijq.element.children().first();
+      grijq.verticalScroller = grijq.element.children().last();
+      grijq.bodyTable = grijq.verticalScroller.children().first();
+      $('td', grijq.bodyTable).focus(function(e) {
+                                 var cell = $(e.target).closest('td');
+                                 if(grijq['selectedCell'] && grijq['selectedCell'].length && cell.length && grijq['selectedCell'][0] === cell[0]) {
+                                   return;
+                                 }
+                                 grijq._clearSelection();
+                                 grijq['selectedCell'] = cell.addClass('ui-state-default');
+                                 if(ie) {
+                                   clearTimeout(iefocus);
+                                   iefocus = setTimeout(function() {cell.focus();}, 100);
+                                 }
+                              });
+      grijq.wrapper = grijq.element;
+      grijq.bodyTable.click(function(e) {
+                        var cell = $(e.target).closest('td');
+                        if(grijq['selectedCell'] && grijq['selectedCell'].length && cell.length && grijq['selectedCell'][0] === cell[0]) {
+                          return;
+                        }
+                        grijq._clearSelection();
+                        grijq['selectedCell'] = cell.addClass('ui-state-default').trigger('focus');
+                      });
+      grijq.verticalScroller.width(parseInt(grijq.bodyTable.prop('width')) + 16)
+                            .height(this.options.height);
       $('thead th', grijq.headerTable).addClass('unselectable')
                                       .hover(function() {$(this).addClass('ui-state-hover')}, function() {$(this).removeClass('ui-state-hover')})
                                       .click(function() {
@@ -174,94 +201,91 @@
                                         grijq['selectedHeader'] = $(this).addClass('ui-state-active');
                                         col.addClass('ui-state-default');
                                         grijq['selectedColumn'] = col;
-                                      })
-                                      .children().prepend($('<span>').addClass('mover').html('.').attr('unselectable', 'on'));
-      var databody = $('tbody', grijq.element).addClass('ui-widget-content');
-      $('thead', grijq.headerTable).addClass('ui-widget-header ui-state-default');
+                                      });
       $('.mover', grijq.headerTable).draggable({
         axis: 'x',
         helper: function() {
-                  grijq.columnResizer.height(grijq.element.height() + grijq.headerTable.height());
+                  grijq.columnResizer.height(grijq.wrapper.height());
                   return grijq.columnResizer.show()[0];
                 },
         stop: function(event, ui) {
                 var offset = ui.position.left - ui.originalPosition.left;
-                var col = getCol.call(this, 1, grijq.element);
+                var col = getCol.call(this, 1, grijq.bodyTable);
                 var newColWidth = Math.max(minWidth, offset + parseInt(col.prop('width')));
                 col.prop('width', newColWidth);
                 col = getCol.call(this, 1, grijq.headerTable);
                 col.prop('width', newColWidth);
 
-                var newTableWidth = Math.max(minWidth, offset + parseInt(grijq.element.prop('width')));
-                grijq.element.prop('width', newTableWidth);
+                var newTableWidth = Math.max(minWidth, offset + parseInt(grijq.headerTable.prop('width')));
+                grijq.bodyTable.prop('width', newTableWidth);
                 grijq.headerTable.prop('width', newTableWidth);
                 grijq.verticalScroller.width(newTableWidth + 16);
               }
       });
       grijq.columnResizer = $('<div>').addClass('resizer');
       grijq.wrapper.append(grijq.columnResizer);
-      grijq.element.keydown(function(e) {
-        var target = $(e.target);
-        switch(e.keyCode) {
-          case LEFT:
-            if(editing) {
-              return;
-            }
-            target.prev().focus();
-            e.preventDefault();
-            break;
-          case RIGHT:
-            if(editing) {
-              return;
-            }
-            target.next().focus();
-            e.preventDefault();
-            break;
-          case UP:
-            if(editing) {
-              return;
-            }
-            var index = target.prevAll().length + 1;
-            $(':nth-child(' + index + ')', target.closest('tr').prev()).focus();
-            e.preventDefault();
-            break;
-          case DOWN:
-            if(editing) {
-              return;
-            }
-            var index = target.prevAll().length + 1;
-            $(':nth-child(' + index + ')', target.closest('tr').next()).focus();
-            e.preventDefault();
-            break;
-          case F2:
-            if(editing) {
-              return;
-            }
-            editing = true;
-            var index = target.prevAll().length;
-            var editorType = grijq.options.columns[index]['type'];
-            grijq['currentEditor'] = editors[editorType];
-            grijq['currentEditor'].edit(target);
-            break;
-          default:
-            if(editing || e.ctrlKey) {
-              return;
-            }
-            if((e.keyCode >= A && e.keyCode <= Z) || (e.keyCode >= ZERO && e.keyCode <= NINE) || (e.keyCode >= NUM_ZERO && e.keyCode <= NUM_NINE) || e.keyCode === DOT || e.keyCode === NUM_DOT) {
-              editing = true;
-              var index = target.prevAll().length;
-              var editorType = grijq.options.columns[index]['type'];
-              grijq['currentEditor'] = editors[editorType];
-              grijq['currentEditor'].edit(target);
-            }
-            break;
-        }
-      });
-      if(grijq.options.columns.length === 0) {
-        $('tr:first', databody).children().each(function() {
-          grijq.options.columns.push(columnBuilder.apply(this));
-        });
-      }
+      // grijq.element.keydown(function(e) {
+      //   var target = $(e.target);
+      //   switch(e.keyCode) {
+      //     case LEFT:
+      //       if(editing) {
+      //         return;
+      //       }
+      //       target.prev().focus();
+      //       e.preventDefault();
+      //       break;
+      //     case RIGHT:
+      //       if(editing) {
+      //         return;
+      //       }
+      //       target.next().focus();
+      //       e.preventDefault();
+      //       break;
+      //     case UP:
+      //       if(editing) {
+      //         return;
+      //       }
+      //       var index = target.prevAll().length + 1;
+      //       $(':nth-child(' + index + ')', target.closest('tr').prev()).focus();
+      //       e.preventDefault();
+      //       break;
+      //     case DOWN:
+      //       if(editing) {
+      //         return;
+      //       }
+      //       var index = target.prevAll().length + 1;
+      //       $(':nth-child(' + index + ')', target.closest('tr').next()).focus();
+      //       e.preventDefault();
+      //       break;
+      //     case F2:
+      //       if(editing) {
+      //         return;
+      //       }
+      //       editing = true;
+      //       var index = target.prevAll().length;
+      //       var editor = grijq.options.columns[index];
+      //       grijq['currentEditor'] = editors[editor['type']];
+      //       grijq['currentEditor'].edit(target, editor['options']);
+      //       break;
+      //     default:
+      //       if(editing || e.ctrlKey) {
+      //         return;
+      //       }
+      //       if((e.keyCode >= A && e.keyCode <= Z) || (e.keyCode >= ZERO && e.keyCode <= NINE) || (e.keyCode >= NUM_ZERO && e.keyCode <= NUM_NINE) || e.keyCode === DOT || e.keyCode === NUM_DOT) {
+      //         editing = true;
+      //         var index = target.prevAll().length;
+      //         var editor = grijq.options.columns[index];
+      //         grijq['currentEditor'] = editors[editor['type']];
+      //         grijq['currentEditor'].edit(target, editor['options']);
+      //       }
+      //       break;
+      //   }
+      // });
+      // if(grijq.options.columns.length === 0) {
+      //   $('tr:first', databody).children().each(function() {
+      //     grijq.options.columns.push(columnBuilder.apply(this));
+      //   });
+      // }
     },
     _clearSelection: function() {
       if(this['selectedColumn']) {
