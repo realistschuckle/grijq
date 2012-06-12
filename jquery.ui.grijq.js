@@ -17,6 +17,7 @@
     , TAB = 9
     , DELETE = 46
     , BACKSPACE = 8
+    , ENTER = 13
     , editing = false
     , editors = {
         'date': {
@@ -49,18 +50,42 @@
             setTimeout(function() {target.html('<div>' + date + '</div>')}, 0);
           }
         },
+        'reading': {
+          'edit': function(target, options) {
+            target.addClass('editing reading');
+            var text = target.text().split(' ');
+            var foot = $('<input>').prop({'maxlength': '3'}).val(parseInt(text[0]) || 0);
+            var inch = $('<input>').prop({'maxlength': '2'}).val(parseInt(text[1]) || 0);
+            var inc = $('<input>').prop({'maxlength': '1'}).val(parseInt(text[2]) || 0);
+            target.html('').append(foot).append('&prime; ').append(inch).append('&Prime;').append(inc).append('/8');
+            foot.select();
+            foot.focus();
+          },
+          'unedit': function(target) {
+            editing = false;
+            var inputs = $('input', target)
+              , markers = ['&prime;', '&Prime;', '/8']
+              , output = []
+              ;
+            inputs.each(function(i) {
+              output.push($(this).val() + markers[i]);
+            });
+            target.html(output.join(' ')).removeClass('editing reading');
+          }
+        },
         'autocomplete': {
           'edit': function(target, options) {
             target.addClass('editing');
             var input = $('<input>').val(target.text()).width(target.width());
             var source = options['source'];
-            if(typeof window[source] !== undefined) {
-              source = window[source];
+            if(typeof window[source] !== 'undefined') {
+              options['source'] = window[source];
             }
-            input.autocomplete({source: source});
             target.html('').append(input);
+            input.autocomplete(options);
             input.select();
             input.focus();
+            setTimeout(function() {input.autocomplete('search');}, 10);
           },
           'unedit': function(target) {
             editing = false;
@@ -70,6 +95,7 @@
               return;
             }
             var text = input.val();
+            input.autocomplete('destroy');
             input.remove();
             setTimeout(function() {target.html('<div>' + text + '</div>')}, 0);
           }
@@ -180,6 +206,11 @@
 
       $('td', grijq.bodyTable).focus(function(e) {
                                  var cell = $(e.target).closest('td');
+                                 if(cell.next().length === 0) {
+                                   var nextRow = cell.parent().next();
+                                   nextRow.attr('data-tabindexed', true);
+                                   nextRow.children().prop('tabindex', '0');
+                                 }
                                  if(grijq['selectedCell'] && grijq['selectedCell'].length && cell.length && grijq['selectedCell'][0] === cell[0]) {
                                    return;
                                  }
@@ -195,9 +226,7 @@
                         if(grijq['selectedCell'] && grijq['selectedCell'].length && cell.length && grijq['selectedCell'][0] === cell[0]) {
                           return;
                         }
-                        cell.parent().children().prop('tabindex', '0').last().focus(function() {
-                          $(this).parent().next().children().prop('tabindex', '0');
-                        });
+                        cell.parent().children().prop('tabindex', '0');
                         grijq._clearSelection();
                         grijq['selectedCell'] = cell.addClass('ui-state-default').trigger('focus');
                       });
@@ -266,6 +295,7 @@
             e.preventDefault();
             break;
           case DOWN:
+          case ENTER:
             if(editing) {
               return;
             }
