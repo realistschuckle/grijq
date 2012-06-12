@@ -195,7 +195,8 @@
                    }
         ;
       grijq.wrapper = grijq.element;
-      grijq.headerTable = grijq.element.children().first();
+      grijq.horizontalScroller = grijq.element.children().first();
+      grijq.headerTable = grijq.horizontalScroller.children();
       grijq.verticalScroller = grijq.element.children().last();
       grijq.bodyTable = grijq.verticalScroller.css('top', grijq.headerTable.height()).children().first();
 
@@ -242,6 +243,7 @@
                                 var sl = grijq.verticalScroller.scrollLeft();
                                 grijq.headerTable.css('left', -sl);
                               });
+        grijq.horizontalScroller.css('max-width', parseInt(grijq.bodyTable.prop('width')));
       }
       $('thead th', grijq.headerTable).addClass('unselectable')
                                       .hover(function() {$(this).addClass('ui-state-hover')}, function() {$(this).removeClass('ui-state-hover')})
@@ -255,7 +257,8 @@
       $('.mover', grijq.headerTable).draggable({
         axis: 'x',
         helper: function() {
-                  grijq.columnResizer.height(grijq.wrapper.height());
+                  grijq.wrapper.append(grijq.columnResizer);
+                  grijq.columnResizer.height(grijq.wrapper.height() * 2).css('z-index', 1000);
                   return grijq.columnResizer.show()[0];
                 },
         stop: function(event, ui) {

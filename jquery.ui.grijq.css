@@ -25,13 +25,18 @@
   position: relative;
 }
 
+.grijq-wrapper .grijq-horizontal {
+  overflow: hidden;
+  position: absolute;
+}
+
 .ui-widget.grijq {
   border-collapse: collapse;
   table-layout: fixed;
 }
 
 .ui-widget.grijq.ui-widget-header-holder {
-  position: absolute;
+  position: relative;
 }
 
 .ui-widget.grijq .ui-widget-header {
