@@ -6,45 +6,72 @@
     , F2 = 113
     , ESC = 27
     , editing = false
+    , editors = {
+        'date': {
+          'edit': function(target) {
+            target.addClass('editing');
+            var input = $('<input>').val(target.text()).width(target.width());
+            target.html('').append(input);
+            input.datepicker({
+              onSelect: function() {
+                var date = input.datepicker('getDate');
+                input.val($.datepicker.formatDate('m/d/yy', date));
+                input.select();
+                input.focus();
+              }
+            });
+            input.select();
+            input.focus();
+            input.datepicker('show');
+          },
+          'unedit': function(target) {
+            editing = false;
+            target.removeClass('editing');
+            var input = target.children().first();
+            if(input.length === 0) {
+              return;
+            }
+            var date = new Date(input.val());
+            date = $.datepicker.formatDate('m/d/yy', date);
+            input.remove();
+            setTimeout(function() {target.html('<div>' + date + '</div>')}, 0);
+          }
+        },
+        'text': {
+          'edit': function(target) {
+            target.addClass('editing');
+            var input = $('<input>').val(target.text()).width(target.width());
+            target.html('').append(input);
+            input.select();
+            input.focus();
+          },
+          'unedit': function(target) {
+            editing = false;
+            target.removeClass('editing');
+            var input = target.children().first();
+            if(input.length === 0) {
+              return;
+            }
+            var text = input.val();
+            input.remove();
+            setTimeout(function() {target.html('<div>' + text + '</div>')}, 0);
+          }
+        },
+        'number': {
+
+        }
+      }
     , columnBuilder = function() {
         var t = $(this).text()
           , f = +t
           , d = new Date(t)
           ;
         if(!isNaN(d.getTime()) && isNaN(f)) {
-          return {
-            'edit': function(target) {
-              target.addClass('editing');
-              var input = $('<input>').val(target.text()).width(target.width());
-              target.html('').append(input);
-              input.datepicker({
-                onSelect: function() {
-                  var date = input.datepicker('getDate');
-                  input.val($.datepicker.formatDate('m/d/yy', date));
-                  input.select();
-                  input.focus();
-                }
-              });
-              input.select();
-              input.focus();
-              input.datepicker('show');
-            },
-            'unedit': function(target) {
-              editing = false;
-              target.removeClass('editing');
-              var input = target.children().first();
-              if(input.length === 0) {
-                return;
-              }
-              var date = input.val();
-              input.remove();
-              setTimeout(function() {target.html('<div>' + date + '</div>')}, 0);
-            }
-          };
+          return {'type': 'date'};
         } else if(!isNaN(f)) {
-          return {'edit': 'number'};
+          return {'type': 'number'};
         } else {
-          return {'edit': 'text'};
+          return {'type': 'text'};
         }
       }
     ;
@@ -81,7 +108,7 @@
       grijq.element.addClass('ui-widget grijq')
                    .click(function(e) {
                      var cell = $(e.target).closest('td');
-                     if(grijq['selectedCell'][0] === cell[0]) {
+                     if(grijq['selectedCell'] && grijq['selectedCell'].length && cell.length && grijq['selectedCell'][0] === cell[0]) {
                        return;
                      }
                      grijq._clearSelection();
@@ -165,7 +192,8 @@
             }
             editing = true;
             var index = target.prevAll().length;
-            grijq['currentEditor'] = grijq.options.columns[index];
+            var editorType = grijq.options.columns[index]['type'];
+            grijq['currentEditor'] = editors[editorType];
             grijq['currentEditor'].edit(target);
             break;
         }
