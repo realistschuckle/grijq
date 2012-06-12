@@ -151,6 +151,7 @@
     options: {
       width: 'auto',
       height: 'auto',
+      scroll: 'internal',
       columns: []
     },
     _create: function() {
@@ -167,9 +168,16 @@
                      return $($('col', table).get(index - offset));
                    }
         ;
+      grijq.wrapper = grijq.element;
       grijq.headerTable = grijq.element.children().first();
       grijq.verticalScroller = grijq.element.children().last();
       grijq.bodyTable = grijq.verticalScroller.children().first();
+
+      if(grijq.options.scroll === 'window') {
+        grijq.verticalScroller.removeClass('grijq-vertical');
+        grijq.wrapper.css('overflow', 'visible');
+      }
+
       $('td', grijq.bodyTable).focus(function(e) {
                                  var cell = $(e.target).closest('td');
                                  if(grijq['selectedCell'] && grijq['selectedCell'].length && cell.length && grijq['selectedCell'][0] === cell[0]) {
@@ -182,21 +190,25 @@
                                    iefocus = setTimeout(function() {cell.focus();}, 100);
                                  }
                               });
-      grijq.wrapper = grijq.element;
       grijq.bodyTable.click(function(e) {
                         var cell = $(e.target).closest('td');
                         if(grijq['selectedCell'] && grijq['selectedCell'].length && cell.length && grijq['selectedCell'][0] === cell[0]) {
                           return;
                         }
+                        cell.parent().children().prop('tabindex', '0').last().focus(function() {
+                          $(this).parent().next().children().prop('tabindex', '0');
+                        });
                         grijq._clearSelection();
                         grijq['selectedCell'] = cell.addClass('ui-state-default').trigger('focus');
                       });
-      grijq.verticalScroller.width(parseInt(grijq.bodyTable.prop('width')) + 16)
-                            .height(this.options.height);
+      if(grijq.options.scroll !== 'window') {
+        grijq.verticalScroller.width(parseInt(grijq.bodyTable.prop('width')) + 16)
+                              .height(this.options.height);
+      }
       $('thead th', grijq.headerTable).addClass('unselectable')
                                       .hover(function() {$(this).addClass('ui-state-hover')}, function() {$(this).removeClass('ui-state-hover')})
                                       .click(function() {
-                                        var col = getCol.call(this, 0, grijq.element);
+                                        var col = getCol.call(this, 0, grijq.bodyTable);
                                         grijq._clearSelection();
                                         grijq['selectedHeader'] = $(this).addClass('ui-state-active');
                                         col.addClass('ui-state-default');
@@ -219,73 +231,79 @@
                 var newTableWidth = Math.max(minWidth, offset + parseInt(grijq.headerTable.prop('width')));
                 grijq.bodyTable.prop('width', newTableWidth);
                 grijq.headerTable.prop('width', newTableWidth);
-                grijq.verticalScroller.width(newTableWidth + 16);
+                if(grijq.options.scroll !== 'window') {
+                  grijq.verticalScroller.width(newTableWidth + 16);
+                }
               }
       });
       grijq.columnResizer = $('<div>').addClass('resizer');
       grijq.wrapper.append(grijq.columnResizer);
-      // grijq.element.keydown(function(e) {
-      //   var target = $(e.target);
-      //   switch(e.keyCode) {
-      //     case LEFT:
-      //       if(editing) {
-      //         return;
-      //       }
-      //       target.prev().focus();
-      //       e.preventDefault();
-      //       break;
-      //     case RIGHT:
-      //       if(editing) {
-      //         return;
-      //       }
-      //       target.next().focus();
-      //       e.preventDefault();
-      //       break;
-      //     case UP:
-      //       if(editing) {
-      //         return;
-      //       }
-      //       var index = target.prevAll().length + 1;
-      //       $(':nth-child(' + index + ')', target.closest('tr').prev()).focus();
-      //       e.preventDefault();
-      //       break;
-      //     case DOWN:
-      //       if(editing) {
-      //         return;
-      //       }
-      //       var index = target.prevAll().length + 1;
-      //       $(':nth-child(' + index + ')', target.closest('tr').next()).focus();
-      //       e.preventDefault();
-      //       break;
-      //     case F2:
-      //       if(editing) {
-      //         return;
-      //       }
-      //       editing = true;
-      //       var index = target.prevAll().length;
-      //       var editor = grijq.options.columns[index];
-      //       grijq['currentEditor'] = editors[editor['type']];
-      //       grijq['currentEditor'].edit(target, editor['options']);
-      //       break;
-      //     default:
-      //       if(editing || e.ctrlKey) {
-      //         return;
-      //       }
-      //       if((e.keyCode >= A && e.keyCode <= Z) || (e.keyCode >= ZERO && e.keyCode <= NINE) || (e.keyCode >= NUM_ZERO && e.keyCode <= NUM_NINE) || e.keyCode === DOT || e.keyCode === NUM_DOT) {
-      //         editing = true;
-      //         var index = target.prevAll().length;
-      //         var editor = grijq.options.columns[index];
-      //         grijq['currentEditor'] = editors[editor['type']];
-      //         grijq['currentEditor'].edit(target, editor['options']);
-      //       }
-      //       break;
-      //   }
-      // });
-      // if(grijq.options.columns.length === 0) {
-      //   $('tr:first', databody).children().each(function() {
-      //     grijq.options.columns.push(columnBuilder.apply(this));
-      //   });
-      // }
+      grijq.bodyTable.keydown(function(e) {
+        var target = $(e.target);
+        switch(e.keyCode) {
+          case LEFT:
+            if(editing) {
+              return;
+            }
+            target.prev().focus();
+            e.preventDefault();
+            break;
+          case RIGHT:
+            if(editing) {
+              return;
+            }
+            target.next().focus();
+            e.preventDefault();
+            break;
+          case UP:
+            if(editing) {
+              return;
+            }
+            var index = target.prevAll().length + 1;
+            var tr = target.closest('tr').prev();
+            tr.children().prop('tabindex', '0');
+            $(':nth-child(' + index + ')', tr).focus();
+            e.preventDefault();
+            break;
+          case DOWN:
+            if(editing) {
+              return;
+            }
+            var index = target.prevAll().length + 1;
+            var tr = target.closest('tr').next();
+            tr.children().prop('tabindex', '0');
+            $(':nth-child(' + index + ')', tr).focus();
+            e.preventDefault();
+            break;
+          case F2:
+            if(editing) {
+              return;
+            }
+            editing = true;
+            var index = target.prevAll().length;
+            var editor = grijq.options.columns[index];
+            grijq['currentEditor'] = editors[editor['type']];
+            grijq['currentEditor'].edit(target, editor['options']);
+            break;
+          default:
+            if(editing || e.ctrlKey) {
+              return;
+            }
+            if((e.keyCode >= A && e.keyCode <= Z) || (e.keyCode >= ZERO && e.keyCode <= NINE) || (e.keyCode >= NUM_ZERO && e.keyCode <= NUM_NINE) || e.keyCode === DOT || e.keyCode === NUM_DOT) {
+              editing = true;
+              var index = target.prevAll().length;
+              var editor = grijq.options.columns[index];
+              grijq['currentEditor'] = editors[editor['type']];
+              grijq['currentEditor'].edit(target, editor['options']);
+            }
+            break;
+        }
+      });
+      if(grijq.options.columns.length === 0) {
+        $('tr:first', grijq.bodyTable).children().each(function() {
+          grijq.options.columns.push(columnBuilder.apply(this));
+        });
+      }
     },
     _clearSelection: function() {
       if(this['selectedColumn']) {
