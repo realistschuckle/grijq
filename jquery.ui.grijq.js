@@ -19,11 +19,12 @@
     , BACKSPACE = 8
     , ENTER = 13
     , editing = false
+    , ie = (!+'\v1')
     , editors = {
         'date': {
           'edit': function(target, options) {
             target.addClass('editing');
-            var input = $('<input>').val(target.text()).width(target.width());
+            var input = $('<input>').val(target.text()).width(target.width() - 1);
             target.html('').append(input);
             input.datepicker({
               onSelect: function() {
@@ -76,7 +77,7 @@
         'autocomplete': {
           'edit': function(target, options) {
             target.addClass('editing');
-            var input = $('<input>').val(target.text()).width(target.width());
+            var input = $('<input>').val(target.text()).width(target.width() - 1);
             var source = options['source'];
             if(typeof window[source] !== 'undefined') {
               options['source'] = window[source];
@@ -103,7 +104,7 @@
         'text': {
           'edit': function(target) {
             target.addClass('editing');
-            var input = $('<input>').val(target.text()).width(target.width());
+            var input = $('<input>').val(target.text()).width(target.width() - 1);
             target.html('').append(input);
             input.select();
             input.focus();
@@ -124,7 +125,7 @@
           'edit': function(target) {
             target.addClass('editing');
             var input = $('<input>').val(target.text())
-                                    .width(target.width())
+                                    .width(target.width() - (ie? 11 : 0))
                                     .keydown(function(e) {
                                       if(e.keyCode === TAB || e.keyCode === LEFT || e.keyCode === UP || e.keyCode === RIGHT || e.keyCode === DOWN || e.keyCode === BACKSPACE || e.keyCode === DELETE) {
                                         return;
@@ -182,7 +183,6 @@
     },
     _create: function() {
       var grijq = this
-        , ie = (!+'\v1')
         , minWidth = ie? 1 : 0
         , iefocus = null
         , getCol = function(offset, table) {
@@ -211,6 +211,10 @@
                                    var nextRow = cell.parent().next();
                                    nextRow.attr('data-tabindexed', true);
                                    nextRow.children().prop('tabindex', '0');
+                                 } else if(cell.prev().length === 0) {
+                                   var previousRow = cell.parent().prev();
+                                   previousRow.attr('data-tabindexed', true);
+                                   previousRow.children().prop('tabindex', '0');
                                  }
                                  if(grijq['selectedCell'] && grijq['selectedCell'].length && cell.length && grijq['selectedCell'][0] === cell[0]) {
                                    return;
@@ -219,7 +223,7 @@
                                  grijq['selectedCell'] = cell.addClass('ui-state-default');
                                  if(ie) {
                                    clearTimeout(iefocus);
-                                   iefocus = setTimeout(function() {cell.focus();}, 100);
+                                   iefocus = setTimeout(function() {cell.focus();}, 200);
                                  }
                               });
       grijq.bodyTable.click(function(e) {
