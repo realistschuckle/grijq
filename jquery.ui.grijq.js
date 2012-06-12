@@ -11,6 +11,12 @@
     , NINE = 57
     , NUM_ZERO = 96
     , NUM_NINE = 105
+    , DOT = 190
+    , DASH = 109
+    , NUM_DOT = 110
+    , TAB = 9
+    , DELETE = 46
+    , BACKSPACE = 8
     , editing = false
     , editors = {
         'date': {
@@ -64,11 +70,33 @@
           }
         },
         'number': {
-          'edit': function() {
-
+          'edit': function(target) {
+            target.addClass('editing');
+            var input = $('<input>').val(target.text())
+                                    .width(target.width())
+                                    .keydown(function(e) {
+                                      if(e.keyCode === TAB || e.keyCode === LEFT || e.keyCode === UP || e.keyCode === RIGHT || e.keyCode === DOWN || e.keyCode === BACKSPACE || e.keyCode === DELETE) {
+                                        return;
+                                      }
+                                      if((e.keyCode < ZERO || e.keyCode > NINE) && (e.keyCode < NUM_ZERO || e.keyCode > NUM_NINE) && e.keyCode !== DOT && e.keyCode !== DASH && e.keyCode !== NUM_DOT) {
+                                        console.log(e.keyCode);
+                                        e.preventDefault();
+                                      }
+                                    });
+            target.html('').append(input);
+            input.select();
+            input.focus();
           },
-          'unedit': function() {
+          'unedit': function(target) {
             editing = false;
+            target.removeClass('editing');
+            var input = target.children().first();
+            if(input.length === 0) {
+              return;
+            }
+            var text = input.val();
+            input.remove();
+            setTimeout(function() {target.html('<div>' + parseFloat(text, 10) + '</div>')}, 0);
           }
         }
       }
@@ -220,7 +248,7 @@
             if(editing || e.ctrlKey) {
               return;
             }
-            if((e.keyCode >= A && e.keyCode <= Z) || (e.keyCode >= ZERO && e.keyCode <= NINE) || (e.keyCode >= NUM_ZERO && e.keyCode <= NUM_NINE)) {
+            if((e.keyCode >= A && e.keyCode <= Z) || (e.keyCode >= ZERO && e.keyCode <= NINE) || (e.keyCode >= NUM_ZERO && e.keyCode <= NUM_NINE) || e.keyCode === DOT || e.keyCode === NUM_DOT) {
               editing = true;
               var index = target.prevAll().length;
               var editorType = grijq.options.columns[index]['type'];
