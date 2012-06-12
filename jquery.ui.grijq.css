@@ -65,6 +65,14 @@
   cursor: default;
 }
 
+.ui-widget.grijq .ui-widget-content td.editing {
+  padding: 0;
+}
+
+.ui-widget.grijq .ui-widget-content td.editing input {
+  border: 0;
+}
+
 .ui-widget.grijq .ui-widget-content td.ui-state-default {
   color: inherit;
 }

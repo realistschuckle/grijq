@@ -3,11 +3,56 @@
     , UP = 38
     , RIGHT = 39
     , DOWN = 40
+    , F2 = 113
+    , ESC = 27
+    , editing = false
+    , columnBuilder = function() {
+        var t = $(this).text()
+          , f = +t
+          , d = new Date(t)
+          ;
+        if(!isNaN(d.getTime()) && isNaN(f)) {
+          return {
+            'edit': function(target) {
+              target.addClass('editing');
+              var input = $('<input>').val(target.text()).width(target.width());
+              target.html('').append(input);
+              input.datepicker({
+                onSelect: function() {
+                  var date = input.datepicker('getDate');
+                  input.val($.datepicker.formatDate('m/d/yy', date));
+                  input.select();
+                  input.focus();
+                }
+              });
+              input.select();
+              input.focus();
+              input.datepicker('show');
+            },
+            'unedit': function(target) {
+              editing = false;
+              target.removeClass('editing');
+              var input = target.children().first();
+              if(input.length === 0) {
+                return;
+              }
+              var date = input.val();
+              input.remove();
+              setTimeout(function() {target.html('<div>' + date + '</div>')}, 0);
+            }
+          };
+        } else if(!isNaN(f)) {
+          return {'edit': 'number'};
+        } else {
+          return {'edit': 'text'};
+        }
+      }
     ;
   $.widget("curtissimo.grijq", {
     options: {
       width: 'auto',
-      height: 'auto'
+      height: 'auto',
+      columns: []
     },
     _create: function() {
       var grijq = this
@@ -35,8 +80,12 @@
       grijq.wrapper.prepend(grijq.headerTable);
       grijq.element.addClass('ui-widget grijq')
                    .click(function(e) {
+                     var cell = $(e.target).closest('td');
+                     if(grijq['selectedCell'][0] === cell[0]) {
+                       return;
+                     }
                      grijq._clearSelection();
-                     grijq['selectedCell'] = $(e.target).closest('td').addClass('ui-state-default').trigger('focus');
+                     grijq['selectedCell'] = cell.addClass('ui-state-default').trigger('focus');
                    });
       grijq.verticalScroller = $('<div>').addClass('grijq-vertical')
                                          .width(parseInt(grijq.element.prop('width')) + 16)
@@ -46,14 +95,14 @@
       $('thead th', grijq.headerTable).addClass('unselectable')
                                       .hover(function() {$(this).addClass('ui-state-hover')}, function() {$(this).removeClass('ui-state-hover')})
                                       .click(function() {
+                                        var col = getCol.call(this, 0, grijq.element);
                                         grijq._clearSelection();
                                         grijq['selectedHeader'] = $(this).addClass('ui-state-active');
-                                        var col = getCol.call(this, 0, grijq.element);
                                         col.addClass('ui-state-default');
                                         grijq['selectedColumn'] = col;
                                       })
                                       .children().prepend($('<span>').addClass('mover').html('.').attr('unselectable', 'on'));
-      $('tbody', grijq.element).addClass('ui-widget-content');
+      var databody = $('tbody', grijq.element).addClass('ui-widget-content');
       $('thead', grijq.headerTable).addClass('ui-widget-header ui-state-default');
       $('.mover', grijq.headerTable).draggable({
         axis: 'x',
@@ -81,30 +130,60 @@
         var target = $(e.target);
         switch(e.keyCode) {
           case LEFT:
+            if(editing) {
+              return;
+            }
             target.prev().focus();
             e.preventDefault();
             break;
           case RIGHT:
+            if(editing) {
+              return;
+            }
             target.next().focus();
             e.preventDefault();
             break;
           case UP:
-            var index = $(target).prevAll().length + 1;
+            if(editing) {
+              return;
+            }
+            var index = target.prevAll().length + 1;
             $(':nth-child(' + index + ')', target.closest('tr').prev()).focus();
             e.preventDefault();
             break;
           case DOWN:
-            var index = $(target).prevAll().length + 1;
+            if(editing) {
+              return;
+            }
+            var index = target.prevAll().length + 1;
             $(':nth-child(' + index + ')', target.closest('tr').next()).focus();
             e.preventDefault();
             break;
+          case F2:
+            if(editing) {
+              return;
+            }
+            editing = true;
+            var index = target.prevAll().length;
+            grijq['currentEditor'] = grijq.options.columns[index];
+            grijq['currentEditor'].edit(target);
+            break;
         }
       });
+      if(grijq.options.columns.length === 0) {
+        $('tr:first', databody).children().each(function() {
+          grijq.options.columns.push(columnBuilder.apply(this));
+        });
+      }
     },
     _clearSelection: function() {
       if(this['selectedColumn']) {
         this['selectedHeader'].removeClass('ui-state-active');
         this['selectedColumn'].removeClass('ui-state-default');
+      }
+      if(this['currentEditor']) {
+        this['currentEditor'].unedit(this['selectedCell']);
+        this['currentEditor'] = null;
       }
       if(this['selectedCell']) {
         this['selectedCell'].removeClass('ui-state-default');
