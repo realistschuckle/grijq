@@ -5,6 +5,10 @@
     , DOWN = 40
     , F2 = 113
     , ESC = 27
+    , A = 65
+    , Z = 90
+    , ZERO = 48
+    , NINE = 57
     , editing = false
     , editors = {
         'date': {
@@ -85,6 +89,7 @@
       var grijq = this
         , ie = (!+'\v1')
         , minWidth = ie? 1 : 0
+        , iefocus = null
         , getCol = function(offset, table) {
                      offset = offset || 0;
                      var index = $(this).attr('data-index');
@@ -96,8 +101,16 @@
         ;
 
       $('td', grijq.element).focus(function(e) {
+                             var cell = $(e.target).closest('td');
+                             if(grijq['selectedCell'] && grijq['selectedCell'].length && cell.length && grijq['selectedCell'][0] === cell[0]) {
+                               return;
+                             }
                               grijq._clearSelection();
-                              grijq['selectedCell'] = $(e.target).closest('td').addClass('ui-state-default');
+                              grijq['selectedCell'] = cell.addClass('ui-state-default');
+                              if(ie) {
+                                clearTimeout(iefocus);
+                                iefocus = setTimeout(function() {cell.focus();}, 100);
+                              }
                             }).genid();
       grijq.wrapper = grijq.element.wrap('<div class="grijq-wrapper">').parent().width(this.options.width + 16);
       grijq.headerTable = $('<table>').prop('width', grijq.element.prop('width'))
@@ -195,6 +208,18 @@
             var editorType = grijq.options.columns[index]['type'];
             grijq['currentEditor'] = editors[editorType];
             grijq['currentEditor'].edit(target);
+            break;
+          default:
+            if(editing || e.ctrlKey) {
+              return;
+            }
+            if((e.keyCode >= A && e.keyCode <= Z) || (e.keyCode >= ZERO && e.keyCode <= NINE)) {
+              editing = true;
+              var index = target.prevAll().length;
+              var editorType = grijq.options.columns[index]['type'];
+              grijq['currentEditor'] = editors[editorType];
+              grijq['currentEditor'].edit(target);
+            }
             break;
         }
       });
