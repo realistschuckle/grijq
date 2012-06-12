@@ -136,16 +136,16 @@
         ;
 
       $('td', grijq.element).focus(function(e) {
-                             var cell = $(e.target).closest('td');
-                             if(grijq['selectedCell'] && grijq['selectedCell'].length && cell.length && grijq['selectedCell'][0] === cell[0]) {
-                               return;
-                             }
-                              grijq._clearSelection();
-                              grijq['selectedCell'] = cell.addClass('ui-state-default');
-                              if(ie) {
-                                clearTimeout(iefocus);
-                                iefocus = setTimeout(function() {cell.focus();}, 100);
-                              }
+                               var cell = $(e.target).closest('td');
+                               if(grijq['selectedCell'] && grijq['selectedCell'].length && cell.length && grijq['selectedCell'][0] === cell[0]) {
+                                 return;
+                               }
+                               grijq._clearSelection();
+                               grijq['selectedCell'] = cell.addClass('ui-state-default');
+                               if(ie) {
+                                 clearTimeout(iefocus);
+                                 iefocus = setTimeout(function() {cell.focus();}, 100);
+                               }
                             }).genid();
       grijq.wrapper = grijq.element.wrap('<div class="grijq-wrapper">').parent().width(this.options.width + 16);
       grijq.headerTable = $('<table>').prop('width', grijq.element.prop('width'))
