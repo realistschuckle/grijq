@@ -9,6 +9,8 @@
     , Z = 90
     , ZERO = 48
     , NINE = 57
+    , NUM_ZERO = 96
+    , NUM_NINE = 105
     , editing = false
     , editors = {
         'date': {
@@ -62,7 +64,12 @@
           }
         },
         'number': {
+          'edit': function() {
 
+          },
+          'unedit': function() {
+            editing = false;
+          }
         }
       }
     , columnBuilder = function() {
@@ -213,7 +220,7 @@
             if(editing || e.ctrlKey) {
               return;
             }
-            if((e.keyCode >= A && e.keyCode <= Z) || (e.keyCode >= ZERO && e.keyCode <= NINE)) {
+            if((e.keyCode >= A && e.keyCode <= Z) || (e.keyCode >= ZERO && e.keyCode <= NINE) || (e.keyCode >= NUM_ZERO && e.keyCode <= NUM_NINE)) {
               editing = true;
               var index = target.prevAll().length;
               var editorType = grijq.options.columns[index]['type'];
