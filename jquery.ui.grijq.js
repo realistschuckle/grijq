@@ -237,13 +237,18 @@
                         grijq['selectedCell'] = cell.trigger('focus');
                       });
       if(grijq.options.scroll !== 'window') {
-        grijq.verticalScroller.css('max-width', parseInt(grijq.bodyTable.prop('width')) + 18)
-                              .height(this.options.height - 25)
+        grijq.verticalScroller.height(this.options.height - 25)
                               .scroll(function(e) {
                                 var sl = grijq.verticalScroller.scrollLeft();
                                 grijq.headerTable.css('left', -sl);
                               });
-        grijq.horizontalScroller.css('max-width', parseInt(grijq.bodyTable.prop('width')));
+        if(grijq.options.width !== 'auto') {
+          grijq.verticalScroller.css('max-width', parseInt(grijq.options.width) + 18)
+          grijq.horizontalScroller.css('max-width', parseInt(grijq.options.width));
+          grijq.wrapper.css('max-width', parseInt(grijq.options.width) + 18);
+          // grijq.verticalScroller.css('max-width', parseInt(grijq.bodyTable.prop('width')) + 18)
+          // grijq.horizontalScroller.css('max-width', parseInt(grijq.bodyTable.prop('width')));
+        }
       }
       $('thead th', grijq.headerTable).addClass('unselectable')
                                       .hover(function() {$(this).addClass('ui-state-hover')}, function() {$(this).removeClass('ui-state-hover')})
@@ -273,7 +278,11 @@
                 grijq.bodyTable.prop('width', newTableWidth);
                 grijq.headerTable.prop('width', newTableWidth);
                 if(grijq.options.scroll !== 'window') {
-                  grijq.verticalScroller.width(newTableWidth + 16);
+                  if(grijq.options.width === 'auto') {
+                    grijq.verticalScroller.width('');
+                  } else {
+                    grijq.verticalScroller.width(newTableWidth + 16);
+                  }
                 }
               }
       });
@@ -318,7 +327,7 @@
             e.preventDefault();
             break;
           case F2:
-            if(editing) {
+            if(editing || target.parent().hasClass('readonly')) {
               return;
             }
             editing = true;
@@ -328,7 +337,7 @@
             grijq['currentEditor'].edit(target, editor['options']);
             break;
           default:
-            if(editing || e.ctrlKey) {
+            if(editing || e.ctrlKey || target.parent().hasClass('readonly')) {
               return;
             }
             if((e.keyCode >= A && e.keyCode <= Z) || (e.keyCode >= ZERO && e.keyCode <= NINE) || (e.keyCode >= NUM_ZERO && e.keyCode <= NUM_NINE) || e.keyCode === DOT || e.keyCode === NUM_DOT) {

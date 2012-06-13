@@ -9,6 +9,7 @@
 .grijq-wrapper {
   overflow: hidden;
   position: relative;
+  background-color: #CCC;
 }
 
 .grijq-wrapper .resizer {
@@ -33,6 +34,7 @@
 .ui-widget.grijq {
   border-collapse: collapse;
   table-layout: fixed;
+  background-color: white;
 }
 
 .ui-widget.grijq.ui-widget-header-holder {
