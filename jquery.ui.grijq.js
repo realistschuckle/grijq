@@ -208,20 +208,20 @@
 
       $('td', grijq.bodyTable).focus(function(e) {
                                  var cell = $(e.target).closest('td');
+                                 var row = cell.parent();
                                  if(cell.next().length === 0) {
-                                   var nextRow = cell.parent().next();
-                                   nextRow.attr('data-tabindexed', true);
+                                   var nextRow = row.next();
                                    nextRow.children().prop('tabindex', '0');
                                  } else if(cell.prev().length === 0) {
-                                   var previousRow = cell.parent().prev();
-                                   previousRow.attr('data-tabindexed', true);
+                                   var previousRow = row.prev();
                                    previousRow.children().prop('tabindex', '0');
                                  }
                                  if(grijq['selectedCell'] && grijq['selectedCell'].length && cell.length && grijq['selectedCell'][0] === cell[0]) {
                                    return;
                                  }
                                  grijq._clearSelection();
-                                 grijq['selectedCell'] = cell.addClass('ui-state-default');
+                                 grijq['selectedRow'] = row.addClass('ui-state-default');
+                                 grijq['selectedCell'] = cell.addClass('ui-state-active');
                                  if(ie) {
                                    clearTimeout(iefocus);
                                    iefocus = setTimeout(function() {cell.focus();}, 200);
@@ -234,7 +234,7 @@
                         }
                         cell.parent().children().prop('tabindex', '0');
                         grijq._clearSelection();
-                        grijq['selectedCell'] = cell.addClass('ui-state-default').trigger('focus');
+                        grijq['selectedCell'] = cell.trigger('focus');
                       });
       if(grijq.options.scroll !== 'window') {
         grijq.verticalScroller.css('max-width', parseInt(grijq.bodyTable.prop('width')) + 18)
@@ -356,8 +356,11 @@
         this['currentEditor'].unedit(this['selectedCell']);
         this['currentEditor'] = null;
       }
+      if(this['selectedRow']) {
+        this['selectedRow'].removeClass('ui-state-default');
+      }
       if(this['selectedCell']) {
-        this['selectedCell'].removeClass('ui-state-default');
+        this['selectedCell'].removeClass('ui-state-active');
       }
     },
     _setOption: function(key, value) {
