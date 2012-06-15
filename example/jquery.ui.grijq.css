@@ -34,7 +34,6 @@
 .ui-widget.grijq {
   border-collapse: collapse;
   table-layout: fixed;
-  background-color: white;
 }
 
 .ui-widget.grijq.ui-widget-header-holder {
@@ -62,7 +61,6 @@
   background-image: none;
   background-repeat: repeat;
   background-position: 0% 0%;
-  background-color: transparent;
   border-top: 0;
 }
 

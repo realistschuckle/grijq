@@ -11,13 +11,18 @@
         margin-top: 1em;
         display: none;
       }
+      #switcher {
+        display: inline-block;
+      }
     </style>
     <script src="jquery-1.7.2.min.js"></script>
     <script src="jquery-ui-1.8.21.min.js"></script>
     <script src="jquery.ui.grijq.js"></script>
     <script src="data.js"></script>
+    <script type="text/javascript" src="http://jqueryui.com/themeroller/themeswitchertool/"></script>
     <script>
       $(function() {
+        $('#switcher').themeswitcher();
         $('#mkeditable').button().click(function() {
           $(this).hide();
           $('#editable').show();
@@ -42,6 +47,7 @@
   <body>
     <button id="mkeditable">Make editable table from raw table</button>
     <button id="mkreadonly">Make readonly table from preformatted table</button>
+    <span id="switcher"></span>
     <p id="editable">Editable Table.</p>
     <table width="1460" id="inline-data">
       <colgroup>
