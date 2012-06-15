@@ -210,10 +210,10 @@
           .appendTo(grijq.headerTable);
         grijq.headerTable.prop('width', grijq.bodyTable.prop('width'));
         grijq.bodyTable
-          .addClass('ui-widget grijq')
+          .addClass('ui-widget grijq ui-widget-content')
           .after(grijq.wrapper)
           .find('tbody')
-            .addClass('ui-widget-content')
+            // .addClass('ui-widget-content')
             .find('td')
               .wrapInner('<div></div>')
             .end()
@@ -291,10 +291,12 @@
                                       .hover(function() {$(this).addClass('ui-state-hover')}, function() {$(this).removeClass('ui-state-hover')})
                                       .click(function() {
                                         var col = getCol.call(this, 0, grijq.bodyTable);
+                                        console.log(col);
                                         grijq._clearSelection();
                                         grijq['selectedHeader'] = $(this).addClass('ui-state-active');
-                                        col.addClass('ui-state-default');
+                                        col.addClass('ui-state-active');
                                         grijq['selectedColumn'] = col;
+                                        console.log(col);
                                       });
       $('.mover', grijq.headerTable).draggable({
         axis: 'x',
@@ -411,7 +413,7 @@
     _clearSelection: function() {
       if(this['selectedColumn']) {
         this['selectedHeader'].removeClass('ui-state-active');
-        this['selectedColumn'].removeClass('ui-state-default');
+        this['selectedColumn'].removeClass('ui-state-active');
       }
       if(this['currentEditor']) {
         var value = this['currentEditor'].unedit(this['selectedCell']);

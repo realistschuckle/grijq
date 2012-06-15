@@ -57,35 +57,39 @@
   cursor: col-resize;
 }
 
-.ui-widget.grijq .ui-widget-content {
+.ui-widget.grijq.ui-widget-content {
   background-image: none;
   background-repeat: repeat;
   background-position: 0% 0%;
   border-top: 0;
 }
 
+.ui-widget.grijq.ui-widget-content tbody {
+  border: inherit;
+}
+
 .ui-widget.grijq tr {
   border: inherit;
 }
 
-.ui-widget.grijq .ui-widget-content td {
+.ui-widget.grijq.ui-widget-content td {
   border: inherit;
   padding: 2px 6px;
   white-space: nowrap;
   cursor: default;
 }
 
-.ui-widget.grijq .ui-widget-content td.editing {
+.ui-widget.grijq.ui-widget-content td.editing {
   padding: 0;
 }
 
-.ui-widget.grijq .ui-widget-content td.editing input {
+.ui-widget.grijq.ui-widget-content td.editing input {
   border: 0;
   padding: 2px 6px;
   margin: 0;
 }
 
-.ui-widget.grijq .ui-widget-content td.editing.reading input {
+.ui-widget.grijq.ui-widget-content td.editing.reading input {
   border: 0;
   padding: 0;
   margin: 0;
@@ -93,7 +97,7 @@
   width: 1.25em;
 }
 
-.ui-widget.grijq .ui-widget-content tr.ui-state-default {
+.ui-widget.grijq.ui-widget-content tr.ui-state-default {
   color: inherit;
 }
 
@@ -104,7 +108,7 @@
   padding: 2px 6px 2px 0;
 }
 
-.ui-widget.grijq .ui-widget-content td div,
+.ui-widget.grijq.ui-widget-content td div,
 .ui-widget.grijq .ui-widget-header th div {
   overflow: hidden;
   text-overflow: ellipsis;
