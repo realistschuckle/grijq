@@ -181,10 +181,51 @@
                    }
         ;
       grijq.wrapper = grijq.element;
+      if(grijq.wrapper.length === 0) {
+        return;
+      }
+      if(grijq.wrapper.get(0).tagName.toLowerCase() === 'table') {
+        grijq.wrapper = $('<div class="grijq-wrapper"><div class="grijq-horizontal"><table class="ui-widget grijq ui-widget-header-holder"><colgroup></colgroup></table></div><div class="grijq-vertical"></div></div>');
+      }
+
       grijq.horizontalScroller = grijq.wrapper.children().first();
       grijq.headerTable = grijq.horizontalScroller.children();
-      grijq.verticalScroller = grijq.wrapper.children().last().css('top', grijq.headerTable.height());
+      grijq.verticalScroller = grijq.wrapper.children().last();
       grijq.bodyTable = grijq.verticalScroller.children().first();
+
+      if(grijq.bodyTable.length === 0) {
+        grijq.bodyTable = grijq.element;
+        grijq.bodyTable
+          .find('thead')
+          .remove()
+          .clone()
+          .addClass('ui-widget-header ui-state-default')
+          .find('th')
+            .prepend('<span class="mover ui-draggable">.</span>')
+            .wrapInner('<div></div>')
+            .each(function(i) {
+              $(this).attr('data-index', i);
+            })
+          .end()
+          .appendTo(grijq.headerTable);
+        grijq.headerTable.prop('width', grijq.bodyTable.prop('width'));
+        grijq.bodyTable
+          .addClass('ui-widget grijq')
+          .after(grijq.wrapper)
+          .find('tbody')
+            .addClass('ui-widget-content')
+            .find('td')
+              .wrapInner('<div></div>')
+            .end()
+          .end()
+          .find('colgroup')
+          .clone()
+          .children()
+          .appendTo(grijq.headerTable.find('colgroup'));
+        grijq.verticalScroller.append(grijq.bodyTable);
+      }
+
+      grijq.verticalScroller.css('top', grijq.headerTable.height());
 
       for(var key in editors) {
         if(typeof grijq.options.editors[key] === 'undefined') {
