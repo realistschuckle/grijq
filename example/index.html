@@ -6,88 +6,40 @@
     <link rel="stylesheet" type="text/css" href="jquery-ui-1.8.21.css">
     <link rel="stylesheet" type="text/css" href="cssfonts-min.css">
     <link rel="stylesheet" type="text/css" href="jquery.ui.grijq.css">
+    <style type="text/css">
+      p {
+        margin-top: 1em;
+        display: none;
+      }
+    </style>
     <script src="jquery-1.7.2.min.js"></script>
     <script src="jquery-ui-1.8.21.min.js"></script>
     <script src="jquery.ui.grijq.js"></script>
     <script src="data.js"></script>
     <script>
       $(function() {
-        var proto = $.ui.autocomplete.prototype
-          , initSource = proto._initSource
-          , htmloption = 'html'
-          ;
-        function filter(array, term) {
-          var matcher = new RegExp('^' + $.ui.autocomplete.escapeRegex(term), 'i');
-          return $.grep(array, function(value) {
-            return matcher.test(value);
+        $('#mkeditable').button().click(function() {
+          $(this).hide();
+          $('#editable').show();
+          $('#inline-data').grijq({
+            height: 300
           });
-        }
-        $.extend(proto, {
-          _initSource: function() {
-            if(!this.options.html) {
-              htmloption = 'text';
-            }
-            if(this.options.html && $.isArray(this.options.source)) {
-              this.source = function(request, response) {
-                response(filter(this.options.source, request.term));
-              };  
-            } else {
-              initSource.call(this);
-            }
-          },
-          _renderItem: function(ul, item) {
-            var a = $('<a></a>')[htmloption](item.label);
-            return $('<li></li>').data('item.autocomplete', item)
-                                 .append(a)
-                                 .appendTo(ul);
-          },
-          _suggest: function(items) {
-            var ul = this.menu.element
-              .empty()
-              .zIndex( this.element.zIndex() + 1 );
-            this._renderMenu( ul, items );
-            // TODO refresh should check if the active item is still in the dom, removing the need for a manual deactivate
-            this.menu.deactivate();
-            this.menu.refresh();
-            // size and position menu
-            ul.show();
-            this._resizeMenu();
-            ul.position($.extend({
-              of: this.element
-            }, this.options.position));
-            if(items.length > 0) {
-              var inBox = this.element.val()
-                , bestMatch = items[0].label
-                , rawEl = this.element[0]
-                ;
-              if(typeof rawEl.selectionStart !== 'undefined') {
-                this.element.val(bestMatch);
-                rawEl.selectionStart = inBox.length;
-                rawEl.selectionEnd = bestMatch.length;
-              } else if(document.selection && document.selection.createRange) {
-                this.element.val(bestMatch);
-                rawEl.focus();
-                rawEl.select();
-                var range = document.selection.createRange();
-                range.collapse();
-                range.moveEnd('character', bestMatch.length);
-                range.moveStart('character', inBox.length);
-                range.select();
-              }
-            }
-          }
         });
-        $('#inline-data').grijq({
-          height: 300
-        });
-        $('#inline-data2').grijq({
-          height: 300
+        $('#mkreadonly').button().click(function() {
+          $(this).hide();
+          $('#readonly').show();
+          $('#inline-data2').grijq({
+            height: 300,
+            readonly: true
+          });
         });
       });
     </script>
   </head>
   <body>
-    <p>Editable Table (does not change values).</p>
+    <button id="mkeditable">Make editable table</button>
+    <button id="mkreadonly">Make readonly table</button>
+    <p id="editable">Editable Table (does not change values).</p>
     <div id="inline-data" class="grijq-wrapper">
       <div class="grijq-horizontal">
         <table width="1460" class="ui-widget grijq ui-widget-header-holder">
@@ -113,9 +65,9 @@
               <th data-index="0" data-type="number" class="unselectable"><div class="unselectable" unselectable="on"><span class="mover ui-draggable">.</span></div></th>
               <th data-index="1" data-type="number" class="unselectable"><div class="unselectable" unselectable="on"><span class="mover ui-draggable">.</span>Ticket #</div></th>
               <th data-index="2" data-type="date" class="unselectable"><div class="unselectable" unselectable="on"><span class="mover ui-draggable">.</span>Closing Date</div></th>
-              <th data-index="3" class="unselectable"><div class="unselectable" unselectable="on"><span class="mover ui-draggable">.</span>Location</div></th>
-              <th data-index="4" class="unselectable"><div class="unselectable" unselectable="on"><span class="mover ui-draggable">.</span>Lease</div></th>
-              <th data-index="5" class="unselectable"><div class="unselectable" unselectable="on"><span class="mover ui-draggable">.</span>Tank</div></th>
+              <th data-index="3" data-type="autocomplete" data-source="locations" data-html="true" class="unselectable"><div class="unselectable" unselectable="on"><span class="mover ui-draggable">.</span>Location</div></th>
+              <th data-index="4" data-type="autocomplete" data-source="leases" data-html="true" class="unselectable"><div class="unselectable" unselectable="on"><span class="mover ui-draggable">.</span>Lease</div></th>
+              <th data-index="5" data-type="autocomplete" data-source="tanks" data-html="true" class="unselectable"><div class="unselectable" unselectable="on"><span class="mover ui-draggable">.</span>Tank</div></th>
               <th data-index="6" class="unselectable"><div class="unselectable" unselectable="on"><span class="mover ui-draggable">.</span>Carrier</div></th>
               <th data-index="7" class="unselectable"><div class="unselectable" unselectable="on"><span class="mover ui-draggable">.</span>Product</div></th>
               <th data-index="8" data-type="number" class="unselectable"><div class="unselectable" unselectable="on"><span class="mover ui-draggable">.</span>Obs. Gravity</div></th>
@@ -1154,6 +1106,7 @@
       </div>
     </div>
 
+    <p id="readonly">Read-only table.</p>
     <div id="inline-data2" class="grijq-wrapper">
       <div class="grijq-horizontal">
         <table width="1460" class="ui-widget grijq ui-widget-header-holder">
@@ -1195,8 +1148,6 @@
           </thead>
         </table>
       </div>
-
-      <p>Read-only table.</p>
       <div class="grijq-vertical">
         <table width="1460" class="ui-widget grijq">
           <colgroup>
