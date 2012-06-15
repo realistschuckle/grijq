@@ -5,6 +5,7 @@ var flatiron = require('flatiron')
   , urlparse = require('url').parse
   , crypto = require('crypto')
   , path = require('path')
+  , base = path.join(__dirname, 'example')
   ;
 
 var mimes = {
@@ -23,7 +24,7 @@ function staticServer() {
   if(urlo.pathname === '/' || urlo.pathname === '') {
     urlo.pathname = '/index.html';
   }
-  fs.readFile(__dirname + urlo.pathname, function(err, data) {
+  fs.readFile(path.join(base, urlo.pathname), function(err, data) {
     if(err) {
       self.res.writeHead(404);
       return self.res.end('Error loading ' + urlo.pathname);
