@@ -35,21 +35,27 @@
         });
         $('#mkeditable').button().click(function() {
           $(this).hide();
-          $('#editable').show();
+          var renderTime = new Date();
           $('#inline-data').grijq({
             height: 300,
             editcomplete: function(e, data) {
               data.cell.children().html(data.val);
             }
           });
+          renderTime = (new Date().valueOf() - renderTime.valueOf()) / 1000;
+          $('#editable-time').html('(js run in ' + renderTime + 's)');
+          $('#editable').show();
         });
         $('#mkreadonly').button().click(function() {
           $(this).hide();
-          $('#readonly').show();
+          var renderTime = new Date();
           $('#inline-data2').grijq({
             height: 300,
             readonly: true
           });
+          renderTime = (new Date().valueOf() - renderTime.valueOf()) / 1000;
+          $('#readonly-time').html('(js run in ' + renderTime + 's)');
+          $('#readonly').show();
         });
       });
     </script>
@@ -59,7 +65,7 @@
     <button id="mkreadonly">Make readonly table from preformatted table</button>
     <button id="clear-choice">Clear theme</button>
     <span id="switcher"></span>
-    <p id="editable">Editable Table.</p>
+    <p id="editable">Editable Table. <span id="editable-time"></span></p>
     <table width="1460" id="inline-data">
       <colgroup>
         <col width="60">
@@ -1101,7 +1107,7 @@
       </tbody>
     </table>
 
-    <p id="readonly">Read-only table.</p>
+    <p id="readonly">Read-only table. <span id="readonly-time"></span></p>
     <div id="inline-data2">
       <div>
         <table width="1460">
