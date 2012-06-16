@@ -49,3 +49,24 @@ app.router.get(/\/images\/[\w\.\_\-]*/, staticServer);
 app.router.get(/\/[\w\.\_\-]*/, staticServer);
 
 app.start(8080);
+
+var watchFile = function(filename) {
+  var options = {persistent: false, interval: 0}
+    , base = __dirname
+    , target = path.join(base, filename)
+    ;
+  console.log('Monitoring file', target);
+  fs.watch(target, options, function(event) {
+    console.log('Moving file', filename);
+    var dest = path.join(path.join(base, 'example'), filename);
+    fs.readFile(path.join(base, filename), function(err, data) {
+      if(err) {
+        throw err;
+      }
+      fs.writeFile(dest, data);
+    });
+  });
+};
+
+watchFile('jquery.ui.grijq.css');
+watchFile('jquery.ui.grijq.js');
