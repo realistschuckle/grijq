@@ -1,1 +1,25 @@
-A data grid extension to jQuery.
+# grijq
+
+A ThemeRoller-ready data grid widget for jQuery UI.
+
+## Works well on
+
+* Chrome 19 for Windows
+* Chrome 19 for OS X
+* Firefox 13 for Windows
+* Firefox 13 for OS X
+* Internet Explorer 8 for Windows
+* Internet Explorer 9 for Windows
+* Opera 12 for Windows
+
+
+## Does not work well on
+
+Opera 12 for OS X
+: It seems that Opera 12 can't even load the example page. The second 1000-row
+  table seems to make it hang forever.
+
+Internet Explorer 9 Compatibility View for Windows
+: It seems that IE 9 CV does not honor the CSS that allows it to truncate text
+  in the grid cells. So make sure to use the *X-UA-Compatible* `meta` tag to
+  notify IE that the page is ok to render as itself.
