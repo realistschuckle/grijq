@@ -223,6 +223,16 @@
           .appendTo(grijq.headerTable.find('colgroup'));
         grijq.verticalScroller.append(grijq.bodyTable);
       } else {
+        var prev = grijq.wrapper.prev();
+        var parent = grijq.wrapper.parent();
+        var insertWrapper = prev.length > 0?
+          function() {
+            prev.after(grijq.wrapper);
+          } :
+          function() {
+            parent.prepend(grijq.wrapper);
+          };
+        grijq.wrapper.remove();
         grijq.headerTable
           .addClass('ui-widget grijq ui-widget-header-holder')
           .children('thead')
@@ -231,10 +241,11 @@
         grijq.verticalScroller.addClass('grijq-vertical');
         grijq.horizontalScroller.addClass('grijq-horizontal');
         grijq.wrapper.addClass('grijq-wrapper');
+        insertWrapper();
       }
+      // var timings = [];
 
-      grijq.verticalScroller.css('top', grijq.headerTable.height());
-
+      // timings.push(['copying editors', new Date()]);
       for(var key in editors) {
         if(typeof grijq.options.editors[key] === 'undefined') {
           grijq.options.editors[key] = editors[key];
@@ -245,8 +256,10 @@
         grijq.verticalScroller.removeClass('grijq-vertical');
         grijq.wrapper.css('overflow', 'visible');
       }
+      // timings.push(['setting height', new Date()]);
       grijq.wrapper.height(this.options.height);
 
+      // timings.push(['setting focus', new Date()]);
       $(grijq.bodyTable).on('focus', 'td', function(e) {
         var cell = $(e.target).closest('td');
         var row = cell.parent();
@@ -274,6 +287,8 @@
           iefocus = setTimeout(function() {cell.focus();}, 200);
         }
       });
+
+      // timings.push(['setting body click', new Date()]);
       grijq.bodyTable.click(function(e) {
         var cell = $(e.target).closest('td');
         if(grijq['selectedCell'] && grijq['selectedCell'].length && cell.length && grijq['selectedCell'][0] === cell[0]) {
@@ -283,18 +298,23 @@
         grijq._clearSelection();
         grijq['selectedCell'] = cell.trigger('focus');
       });
+
       if(grijq.options.scroll !== 'window') {
+        // timings.push(['setting vertical height', new Date()]);
         grijq.verticalScroller.height(this.options.height - 25)
                               .scroll(function(e) {
                                 var sl = grijq.verticalScroller.scrollLeft();
                                 grijq.headerTable.css('left', -sl);
                               });
+        // timings.push(['setting widths', new Date()]);
         if(grijq.options.width !== 'auto') {
           grijq.verticalScroller.css('max-width', parseInt(grijq.options.width) + 18)
           grijq.horizontalScroller.css('max-width', parseInt(grijq.options.width));
           grijq.wrapper.css('max-width', parseInt(grijq.options.width) + 18);
         }
       }
+
+      // timings.push(['setting header class, hover, and click', new Date()]);
       $('thead th', grijq.headerTable).addClass('unselectable')
                                       .hover(function() {$(this).addClass('ui-state-hover')}, function() {$(this).removeClass('ui-state-hover')})
                                       .click(function() {
@@ -306,6 +326,8 @@
                                         grijq['selectedColumn'] = col;
                                         console.log(col);
                                       });
+
+      // timings.push(['setting mover functionality', new Date()]);
       $('.mover', grijq.headerTable).draggable({
         axis: 'x',
         helper: function() {
@@ -333,8 +355,14 @@
                 }
               }
       });
+
+      // timings.push(['creating resizer', new Date()]);
       grijq.columnResizer = $('<div>').addClass('resizer');
+
+      // timings.push(['adding resizer', new Date()]);
       grijq.wrapper.append(grijq.columnResizer);
+
+      // timings.push(['setting keydown functionality', new Date()]);
       grijq.bodyTable.keydown(function(e) {
         var target = $(e.target);
         switch(e.keyCode) {
@@ -403,11 +431,26 @@
             break;
         }
       });
+
+      // timings.push(['building column types', new Date()]);
       if(grijq.options.columns.length === 0) {
         $('tr:last', grijq.headerTable).children().each(function() {
           grijq.options.columns.push(columnBuilder.apply(this));
         });
       }
+
+      // timings.push(['setting top', new Date()]);
+      grijq.verticalScroller.css('top', grijq.headerTable.height());
+
+      // timings.push(['movement done', new Date()]);
+      // setTimeout(function() {
+      //   timings.push(['reflowed', new Date()]);
+      //   var baseTime = timings[0][1];
+      //   for(var i = 0; i < timings.length; i += 1) {
+      //     var offset = timings[i][1].valueOf() - baseTime.valueOf();
+      //     console.log(offset, timings[i][0]);
+      //   }
+      // }, 1);
     },
     selectLastRow: function() {
       var cell = this.bodyTable.find('tr').last().children(':not(.readonly)').first();
