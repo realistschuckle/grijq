@@ -1,5 +1,7 @@
 # grijq
 
+More at [the project page](http://curtis.schlak.com/grijq/).
+
 A ThemeRoller-ready data grid widget for jQuery UI that consumes normal HTML
 tables.
 
