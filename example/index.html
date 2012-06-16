@@ -10,9 +10,14 @@
       p {
         margin-top: 1em;
         display: none;
+        clear: both;
       }
       #switcher {
         display: inline-block;
+        float: right;
+      }
+      #clear-choice {
+        float: right;
       }
     </style>
     <script src="jquery-1.7.2.min.js"></script>
@@ -23,6 +28,10 @@
     <script>
       $(function() {
         $('#switcher').themeswitcher();
+        $('#clear-choice').button().click(function() {
+          $.cookie('jquery-ui-theme', null);
+          location.href = location.href;
+        });
         $('#mkeditable').button().click(function() {
           $(this).hide();
           $('#editable').show();
@@ -47,6 +56,7 @@
   <body>
     <button id="mkeditable">Make editable table from raw table</button>
     <button id="mkreadonly">Make readonly table from preformatted table</button>
+    <button id="clear-choice">Clear theme</button>
     <span id="switcher"></span>
     <p id="editable">Editable Table.</p>
     <table width="1460" id="inline-data">
