@@ -1,0 +1,115 @@
+.unselectable {
+  -moz-user-select: -moz-none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+} 
+
+.grijq-wrapper {
+  overflow: hidden;
+  position: relative;
+  background-color: #CCC;
+}
+
+.grijq-wrapper .resizer {
+  background-color: gray;
+  position: absolute;
+  display: none;
+  top: 0;
+  left: 0;
+  width: 4px;
+}
+
+.grijq-wrapper .grijq-vertical {
+  overflow: scroll;
+  position: relative;
+}
+
+.grijq-wrapper .grijq-horizontal {
+  overflow: hidden;
+  position: absolute;
+}
+
+.ui-widget.grijq {
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.ui-widget.grijq.ui-widget-header-holder {
+  position: relative;
+}
+
+.ui-widget.grijq .ui-widget-header {
+  cursor: default;
+}
+
+.ui-widget.grijq col.ui-state-default{
+  border-top: 0;
+}
+
+.ui-widget.grijq .ui-widget-header .mover {
+  display: inline-block;
+  text-indent: -1000000px;
+  padding: 2px 3px;
+  *width: 4px;
+  *float: left;
+  cursor: col-resize;
+}
+
+.ui-widget.grijq.ui-widget-content {
+  background-image: none;
+  background-repeat: repeat;
+  background-position: 0% 0%;
+  border-top: 0;
+}
+
+.ui-widget.grijq.ui-widget-content tbody {
+  border: inherit;
+}
+
+.ui-widget.grijq tr {
+  border: inherit;
+}
+
+.ui-widget.grijq.ui-widget-content td {
+  border: inherit;
+  padding: 2px 6px;
+  white-space: nowrap;
+  cursor: default;
+}
+
+.ui-widget.grijq.ui-widget-content td.editing {
+  padding: 0;
+}
+
+.ui-widget.grijq.ui-widget-content td.editing input {
+  border: 0;
+  padding: 2px 6px;
+  margin: 0;
+}
+
+.ui-widget.grijq.ui-widget-content td.editing.reading input {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  text-align: right;
+  width: 1.25em;
+}
+
+.ui-widget.grijq.ui-widget-content tr.ui-state-default {
+  color: inherit;
+}
+
+.ui-widget.grijq .ui-widget-header th {
+  border: inherit;
+  font-weight: bold;
+  white-space: nowrap;
+  padding: 2px 6px 2px 0;
+}
+
+.ui-widget.grijq.ui-widget-content td div,
+.ui-widget.grijq .ui-widget-header th div {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
