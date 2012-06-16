@@ -32,11 +32,18 @@ to render.
 
 ## Does not work well on
 
-Opera 12 for OS X
-: It seems that Opera 12 can't even load the example page. The second 1000-row
-  table seems to make it hang forever.
+<dl>
+  <dt>Opera 12 for OS X</dt>
+  <dd>
+    It seems that Opera 12 can't even load the example page. The second 1000-row
+    table seems to make it hang forever.
+  </dd>
+  <dt>Internet Explorer 9 Compatibility View for Windows</dt>
+  <dd>
+    It seems that IE 9 CV does not honor the CSS that allows it to truncate text
+    in the grid cells. So make sure to use the *X-UA-Compatible* `meta` tag to
+    notify IE that the page is ok to render as itself.
+  </dd>
+</dl>
 
-Internet Explorer 9 Compatibility View for Windows
-: It seems that IE 9 CV does not honor the CSS that allows it to truncate text
-  in the grid cells. So make sure to use the *X-UA-Compatible* `meta` tag to
-  notify IE that the page is ok to render as itself.
+
