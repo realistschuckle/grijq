@@ -213,7 +213,6 @@
           .addClass('ui-widget grijq ui-widget-content')
           .after(grijq.wrapper)
           .find('tbody')
-            // .addClass('ui-widget-content')
             .find('td')
               .wrapInner('<div></div>')
             .end()
@@ -223,6 +222,15 @@
           .children()
           .appendTo(grijq.headerTable.find('colgroup'));
         grijq.verticalScroller.append(grijq.bodyTable);
+      } else {
+        grijq.headerTable
+          .addClass('ui-widget grijq ui-widget-header-holder')
+          .children('thead')
+            .addClass('ui-widget-header ui-state-default');
+        grijq.bodyTable.addClass('ui-widget grijq ui-widget-content');
+        grijq.verticalScroller.addClass('grijq-vertical');
+        grijq.horizontalScroller.addClass('grijq-horizontal');
+        grijq.wrapper.addClass('grijq-wrapper');
       }
 
       grijq.verticalScroller.css('top', grijq.headerTable.height());
