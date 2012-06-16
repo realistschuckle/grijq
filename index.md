@@ -7,7 +7,11 @@ title:  grijq by realistschuckle
 A ThemeRoller-ready data grid widget for jQuery UI that consumes normal HTML
 tables.
 
-## Example
+## Examples
+
+* [Two 1000-row grids built on demand with the theme switcher widget](examples/lots-of-rows.html)
+
+## Usage
 
 {% highlight html %}
   <table width="100" id="grid">
