@@ -1,0 +1,83 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>grijq by realistschuckle</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>grijq</h1>
+        <p>A missing data grid powered by jQuery.</p>
+        <p class="view"><a href="https://github.com/realistschuckle/grijq">View the Project on GitHub <small>realistschuckle/grijq</small></a></p>
+        <ul>
+          <li><a href="https://github.com/realistschuckle/grijq/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/realistschuckle/grijq/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/realistschuckle/grijq">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>grijq</h1>
+
+<p>A ThemeRoller-ready data grid widget for jQuery UI that consumes normal HTML
+tables.</p>
+
+<h2>Motivation</h2>
+
+<p>I wanted a data grid that did not rely on JavaScript arrays and special APIs.
+Instead, I wanted a grid that worked from a fully rendered HTML table that
+something else could manage, like <a href="http://knockoutjs.com">knockout.js</a>. I
+could not find any and, so, tackling the problem like a programmer, spent a
+couple of days putting one together.</p>
+
+<h2>Notes</h2>
+
+<p>On Chrome and Firefox, the parsing and rendering of a table takes no real
+difference if your source contains a raw table or a pre-formatted table.</p>
+
+<p>On Internet Explorer, the pre-formatted table takes an apreciably shorter time
+to render.</p>
+
+<h2>Works well on</h2>
+
+<ul>
+<li>Chrome 19 for Windows</li>
+<li>Chrome 19 for OS X</li>
+<li>Firefox 13 for Windows</li>
+<li>Firefox 13 for OS X</li>
+<li>Internet Explorer 8 for Windows</li>
+<li>Internet Explorer 9 for Windows</li>
+<li>Opera 12 for Windows</li>
+</ul><h2>Does not work well on</h2>
+
+<dl>
+<dt>Opera 12 for OS X</dt>
+  <dd>
+    It seems that Opera 12 can't even load the example page. The second 1000-row
+    table seems to make it hang forever.
+  </dd>
+  <dt>Internet Explorer 9 Compatibility View for Windows</dt>
+  <dd>
+    It seems that IE 9 CV does not honor the CSS that allows it to truncate text
+    in the grid cells. So make sure to use the *X-UA-Compatible* `meta` tag to
+    notify IE that the page is ok to render as itself.
+  </dd>
+</dl>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/realistschuckle">realistschuckle</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
