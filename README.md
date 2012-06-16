@@ -1,6 +1,15 @@
 # grijq
 
-A ThemeRoller-ready data grid widget for jQuery UI.
+A ThemeRoller-ready data grid widget for jQuery UI that consumes normal HTML
+tables.
+
+## Motivation
+
+I wanted a data grid that did not rely on JavaScript arrays and special APIs.
+Instead, I wanted a grid that worked from a fully rendered HTML table that
+something else could manage, like [knockout.js](http://knockoutjs.com). I
+could not find any and, so, tackling the problem like a programmer, spent a
+couple of days putting one together.
 
 ## Notes
 
