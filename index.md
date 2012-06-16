@@ -7,6 +7,45 @@ title:  grijq by realistschuckle
 A ThemeRoller-ready data grid widget for jQuery UI that consumes normal HTML
 tables.
 
+## Example
+
+{% highlight html %}
+  <table width="100" id="grid">
+    <colgroup>
+      <col width="55">
+      <col width="45">
+    </colgroup>
+    <thead>
+      <tr>
+        <th>Song</th>
+        <th>Length</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Code Monkey</td>
+        <td>3:10</td>
+      </tr>
+      <tr>
+        <td>Ikea</td>
+        <td>3:05</td>
+      </tr>
+      <tr>
+        <td>I Feel Fantastic</td>
+        <td>3:06</td>
+      </tr>
+      <tr>
+        <td>Mandelbrot Set</td>
+        <td>4:22</td>
+      </tr>
+    </tbody>
+  </table>
+{% endhighlight %}
+
+{% highlight javascript %}
+  $('#grid').grijq();
+{% endhighlight %}
+
 ## Motivation
 
 I wanted a data grid that did not rely on JavaScript arrays and special APIs.
