@@ -319,12 +319,10 @@
                                       .hover(function() {$(this).addClass('ui-state-hover')}, function() {$(this).removeClass('ui-state-hover')})
                                       .click(function() {
                                         var col = getCol.call(this, 0, grijq.bodyTable);
-                                        console.log(col);
                                         grijq._clearSelection();
                                         grijq['selectedHeader'] = $(this).addClass('ui-state-active');
                                         col.addClass('ui-state-active');
                                         grijq['selectedColumn'] = col;
-                                        console.log(col);
                                       });
 
       // timings.push(['setting mover functionality', new Date()]);
