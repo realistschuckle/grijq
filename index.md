@@ -9,7 +9,7 @@ tables.
 
 ## Examples
 
-* [Two 1000-row grids built on demand with the theme switcher widget](examples/lots-of-rows.html)
+* [A 1000-row grid built on demand with the theme switcher widget](examples/lots-of-rows.html)
 
 ## Usage
 
