@@ -1,10 +1,5 @@
 (function($) {
-  var LEFT = 37
-    , UP = 38
-    , RIGHT = 39
-    , DOWN = 40
-    , F2 = 113
-    , ESC = 27
+  var F2 = 113
     , A = 65
     , Z = 90
     , ZERO = 48
@@ -14,17 +9,13 @@
     , DOT = 190
     , DASH = 109
     , NUM_DOT = 110
-    , TAB = 9
-    , DELETE = 46
-    , BACKSPACE = 8
-    , ENTER = 13
     , editing = false
     , ie = (!+'\v1')
     , editors = {
         'date': {
           'edit': function(target, options) {
             target.addClass('editing');
-            var input = $('<input>').val(target.text()).width(target.width() - 11);
+            var input = $('<input>').val(target.text()).width(target.width() - 12);
             target.children().hide().end().append(input);
             input.datepicker({
               onSelect: function() {
@@ -55,7 +46,7 @@
         'autocomplete': {
           'edit': function(target, options) {
             target.addClass('editing');
-            var input = $('<input>').val(target.text()).width(target.width() - 11);
+            var input = $('<input>').val(target.text()).width(target.width() - 12);
             var source = options['source'];
             if(typeof window[source] !== 'undefined') {
               options['source'] = window[source];
@@ -85,7 +76,7 @@
         'text': {
           'edit': function(target) {
             target.addClass('editing');
-            var input = $('<input>').val(target.text()).width(target.width() - 11);
+            var input = $('<input>').val(target.text()).width(target.width() - 12);
             target.children().hide().end().append(input);
             input.select();
             input.focus();
@@ -107,9 +98,9 @@
           'edit': function(target) {
             target.addClass('editing');
             var input = $('<input>').val(target.text())
-                                    .width(target.width() - 11)
+                                    .width(target.width() - 12)
                                     .keydown(function(e) {
-                                      if(e.keyCode === TAB || e.keyCode === LEFT || e.keyCode === UP || e.keyCode === RIGHT || e.keyCode === DOWN || e.keyCode === BACKSPACE || e.keyCode === DELETE) {
+                                      if(e.keyCode === $.ui.keyCode.TAB || e.keyCode === $.ui.keyCode.LEFT || e.keyCode === $.ui.keyCode.UP || e.keyCode === $.ui.keyCode.RIGHT || e.keyCode === $.ui.keyCode.DOWN || e.keyCode === $.ui.keyCode.BACKSPACE || e.keyCode === $.ui.keyCode.DELETE) {
                                         return;
                                       }
                                       if((e.keyCode < ZERO || e.keyCode > NINE) && (e.keyCode < NUM_ZERO || e.keyCode > NUM_NINE) && e.keyCode !== DOT && e.keyCode !== DASH && e.keyCode !== NUM_DOT) {
@@ -161,7 +152,6 @@
     options: {
       width: 'auto',
       height: 'auto',
-      scroll: 'internal',
       readonly: false,
       newrow: true,
       columns: [],
@@ -179,71 +169,39 @@
                      }
                      return $($('col', table).get(index - offset));
                    }
+        // , timings = []
         ;
-      grijq.wrapper = grijq.element;
-      if(grijq.wrapper.length === 0) {
+      if(grijq.element.length === 0) {
         return;
       }
-      if(grijq.wrapper.get(0).tagName.toLowerCase() === 'table') {
-        grijq.wrapper = $('<div class="grijq-wrapper"><div class="grijq-horizontal"><table class="ui-widget grijq ui-widget-header-holder"><colgroup></colgroup></table></div><div class="grijq-vertical"></div></div>');
-      }
 
-      grijq.horizontalScroller = grijq.wrapper.children().first();
-      grijq.headerTable = grijq.horizontalScroller.children();
-      grijq.verticalScroller = grijq.wrapper.children().last();
-      grijq.bodyTable = grijq.verticalScroller.children().first();
-
-      if(grijq.bodyTable.length === 0) {
-        grijq.bodyTable = grijq.element;
-        grijq.bodyTable
-          .find('thead')
-          .remove()
-          .clone()
+      grijq.cols = grijq.element.children('colgroup').children();
+      grijq.scroller = $('<div class="ui-grijq-scroll"></div>');
+      grijq.widget = $('<div class="ui-grijq"></div>').append(grijq.scroller);
+      grijq.element
+        .addClass('ui-widget ui-widget-content')
+        .after(grijq.widget)
+        .appendTo(grijq.scroller)
+        .children('tbody')
+          .find('td')
+            .wrapInner('<div></div>')
+          .end()
+        .end()
+        .children('thead')
           .addClass('ui-widget-header ui-state-default')
           .find('th')
-            .prepend('<span class="mover ui-draggable">.</span>')
+            .append('<span class="mover">.</span>')
             .wrapInner('<div></div>')
             .each(function(i) {
-              $(this).attr('data-index', i);
+              var $this = $(this);
+              var pad = parseInt($this.css('padding-left')) + 
+                        parseInt($this.css('padding-right'));
+              $(this)
+                .attr('data-index', i)
+                .width(+$(grijq.cols[i]).prop('width') - 1 - pad);
             })
-          .end()
-          .appendTo(grijq.headerTable);
-        grijq.headerTable.prop('width', grijq.bodyTable.prop('width'));
-        grijq.bodyTable
-          .addClass('ui-widget grijq ui-widget-content')
-          .after(grijq.wrapper)
-          .find('tbody')
-            .find('td')
-              .wrapInner('<div></div>')
-            .end()
-          .end()
-          .find('colgroup')
-          .clone()
-          .children()
-          .appendTo(grijq.headerTable.find('colgroup'));
-        grijq.verticalScroller.append(grijq.bodyTable);
-      } else {
-        var prev = grijq.wrapper.prev();
-        var parent = grijq.wrapper.parent();
-        var insertWrapper = prev.length > 0?
-          function() {
-            prev.after(grijq.wrapper);
-          } :
-          function() {
-            parent.prepend(grijq.wrapper);
-          };
-        grijq.wrapper.remove();
-        grijq.headerTable
-          .addClass('ui-widget grijq ui-widget-header-holder')
-          .children('thead')
-            .addClass('ui-widget-header ui-state-default');
-        grijq.bodyTable.addClass('ui-widget grijq ui-widget-content');
-        grijq.verticalScroller.addClass('grijq-vertical');
-        grijq.horizontalScroller.addClass('grijq-horizontal');
-        grijq.wrapper.addClass('grijq-wrapper');
-        insertWrapper();
-      }
-      // var timings = [];
+          .end();
+      grijq.head = grijq.element.children('thead');
 
       // timings.push(['copying editors', new Date()]);
       for(var key in editors) {
@@ -252,139 +210,119 @@
         }
       }
 
-      if(grijq.options.scroll === 'window') {
-        grijq.verticalScroller.removeClass('grijq-vertical');
-        grijq.wrapper.css('overflow', 'visible');
-      }
       // timings.push(['setting height', new Date()]);
-      grijq.wrapper.height(this.options.height);
+      grijq.scroller
+        .height(this.options.height)
+        .scroll(function() {
+          grijq.head.css('left', -grijq.scroller.scrollLeft());
+        });
 
       // timings.push(['setting focus', new Date()]);
-      $(grijq.bodyTable).on('focus', 'td', function(e) {
-        var cell = $(e.target).closest('td');
-        var row = cell.parent();
-        if(cell.next().length === 0) {
-          var nextRow = row.next();
-          nextRow.children(':not(.readonly)').prop('tabindex', '0');
-        } else if(cell.prev().length === 0) {
-          var previousRow = row.prev();
-          previousRow.children(':not(.readonly)').prop('tabindex', '0');
-        }
-        if(grijq['selectedCell'] && grijq['selectedCell'].length && cell.length && grijq['selectedCell'][0] === cell[0]) {
-          return;
-        }
-        grijq._clearSelection();
-        var oldrow = grijq['selectedRow'];
-        grijq['selectedRow'] = row.addClass('ui-state-default');
-        if(oldrow && oldrow.get(0) !== row.get(0)) {
-          grijq._trigger('rowselected', null, {row: row});
-        } else {
+      grijq.element
+        .on('focus', 'td', function(e) {
+          var cell = $(e.target).closest('td');
+          var row = cell.parent();
+          if(cell.next().length === 0) {
+            var nextRow = row.next();
+            nextRow.children(':not(.readonly)').prop('tabindex', '0');
+          } else if(cell.prev().length === 0) {
+            var previousRow = row.prev();
+            previousRow.children(':not(.readonly)').prop('tabindex', '0');
+          }
+          if(grijq['selectedCell'] && grijq['selectedCell'].length && cell.length && grijq['selectedCell'][0] === cell[0]) {
+            return;
+          }
+          grijq._clearSelection();
+          var oldrow = grijq['selectedRow'];
+          grijq['selectedRow'] = row.addClass('ui-state-default');
+          if(oldrow && oldrow.get(0) !== row.get(0)) {
+            grijq._trigger('rowselected', null, {row: row});
+          } else {
+            cell.parent().children(':not(.readonly)').prop('tabindex', '0');
+          }
+          grijq['selectedCell'] = cell.addClass('ui-state-active');
+          if(ie) {
+            clearTimeout(iefocus);
+            iefocus = setTimeout(function() {cell.focus();}, 200);
+          }
+        })
+        .click(function(e) {
+          var cell = $(e.target).closest('td');
+          if(grijq['selectedCell'] && grijq['selectedCell'].length && cell.length && grijq['selectedCell'][0] === cell[0]) {
+            return;
+          }
           cell.parent().children(':not(.readonly)').prop('tabindex', '0');
-        }
-        grijq['selectedCell'] = cell.addClass('ui-state-active');
-        if(ie) {
-          clearTimeout(iefocus);
-          iefocus = setTimeout(function() {cell.focus();}, 200);
-        }
-      });
+          grijq._clearSelection();
+          grijq['selectedCell'] = cell.trigger('focus');
+        });
 
-      // timings.push(['setting body click', new Date()]);
-      grijq.bodyTable.click(function(e) {
-        var cell = $(e.target).closest('td');
-        if(grijq['selectedCell'] && grijq['selectedCell'].length && cell.length && grijq['selectedCell'][0] === cell[0]) {
-          return;
-        }
-        cell.parent().children(':not(.readonly)').prop('tabindex', '0');
-        grijq._clearSelection();
-        grijq['selectedCell'] = cell.trigger('focus');
-      });
-
-      if(grijq.options.scroll !== 'window') {
-        // timings.push(['setting vertical height', new Date()]);
-        grijq.verticalScroller.height(this.options.height - 25)
-                              .scroll(function(e) {
-                                var sl = grijq.verticalScroller.scrollLeft();
-                                grijq.headerTable.css('left', -sl);
-                              });
-        // timings.push(['setting widths', new Date()]);
-        if(grijq.options.width !== 'auto') {
-          grijq.verticalScroller.css('max-width', parseInt(grijq.options.width) + 18)
-          grijq.horizontalScroller.css('max-width', parseInt(grijq.options.width));
-          grijq.wrapper.css('max-width', parseInt(grijq.options.width) + 18);
-        }
+      // timings.push(['setting widths', new Date()]);
+      if(grijq.options.width !== 'auto') {
+        grijq.scroller.css('max-width', parseInt(grijq.options.width));
+        grijq.widget.css('max-width', parseInt(grijq.options.width));
       }
 
       // timings.push(['setting header class, hover, and click', new Date()]);
-      $('thead th', grijq.headerTable).addClass('unselectable')
-                                      .hover(function() {$(this).addClass('ui-state-hover')}, function() {$(this).removeClass('ui-state-hover')})
-                                      .click(function() {
-                                        var col = getCol.call(this, 0, grijq.bodyTable);
-                                        grijq._clearSelection();
-                                        grijq['selectedHeader'] = $(this).addClass('ui-state-active');
-                                        col.addClass('ui-state-active');
-                                        grijq['selectedColumn'] = col;
-                                      });
+      $('th', grijq.head)
+        .addClass('unselectable')
+        .click(function(e) {
+          e.stopPropagation();
+          var index = $(this).prevAll().length;
+          var col = $(grijq.cols.get(index));
+          grijq._clearSelection();
+          grijq['selectedHeader'] = $(this).addClass('ui-state-active');
+          col.addClass('ui-state-default');
+          grijq['selectedColumn'] = col;
+        });
 
       // timings.push(['setting mover functionality', new Date()]);
       $('.mover', grijq.headerTable).draggable({
         axis: 'x',
         helper: function() {
-                  grijq.wrapper.append(grijq.columnResizer);
-                  grijq.columnResizer.height(grijq.wrapper.height() * 2).css('z-index', 1000);
+                  grijq.widget.append(grijq.columnResizer);
+                  grijq.columnResizer.height(grijq.widget.height() - 16).css('z-index', 1000);
                   return grijq.columnResizer.show()[0];
                 },
         stop: function(event, ui) {
                 var offset = ui.position.left - ui.originalPosition.left;
-                var col = getCol.call(this, 1, grijq.bodyTable);
+                var index = $(this).closest('th').prevAll().length;
+                var col = $(grijq.cols.get(index));
                 var newColWidth = Math.max(minWidth, offset + parseInt(col.prop('width')));
                 col.prop('width', newColWidth);
-                col = getCol.call(this, 1, grijq.headerTable);
-                col.prop('width', newColWidth);
-
-                var newTableWidth = Math.max(minWidth, offset + parseInt(grijq.headerTable.prop('width')));
-                grijq.bodyTable.prop('width', newTableWidth);
-                grijq.headerTable.prop('width', newTableWidth);
-                if(grijq.options.scroll !== 'window') {
-                  if(grijq.options.width === 'auto') {
-                    grijq.verticalScroller.width('');
-                  } else {
-                    grijq.verticalScroller.width(newTableWidth + 16);
-                  }
-                }
+                $(grijq.head.children().first().children().get(index)).width(newColWidth - 1);
+                var newTableWidth = Math.max(minWidth, offset + parseInt(grijq.element.prop('width')));
+                grijq.element.prop('width', newTableWidth);
               }
       });
 
       // timings.push(['creating resizer', new Date()]);
-      grijq.columnResizer = $('<div>').addClass('resizer');
-
-      // timings.push(['adding resizer', new Date()]);
-      grijq.wrapper.append(grijq.columnResizer);
+      grijq.columnResizer = $('<div class="resizer"></div>');
 
       // timings.push(['setting keydown functionality', new Date()]);
-      grijq.bodyTable.keydown(function(e) {
+      grijq.element.keydown(function(e) {
         var target = $(e.target);
         switch(e.keyCode) {
-          case TAB:
+          case $.ui.keyCode.TAB:
             if((e.target.nodeName.toLowerCase() === 'td' || (editing && target.closest('td').next().length === 0)) && typeof grijq.options.newrow === 'function' && target.next().length === 0 && target.parent().next().length === 0) {
               grijq.options.newrow();
               target.parent().next().children(':not(.readonly)').prop('tabindex', 0);
             }
             break;
-          case LEFT:
+          case $.ui.keyCode.LEFT:
             if(editing) {
               return;
             }
             target.prev().focus();
             e.preventDefault();
             break;
-          case RIGHT:
+          case $.ui.keyCode.RIGHT:
             if(editing) {
               return;
             }
             target.next().focus();
             e.preventDefault();
             break;
-          case UP:
+          case $.ui.keyCode.UP:
             if(editing) {
               return;
             }
@@ -394,8 +332,14 @@
             $(':nth-child(' + index + ')', tr).focus();
             e.preventDefault();
             break;
-          case DOWN:
-          case ENTER:
+          case $.ui.keyCode.DELETE:
+            if(editing) {
+              return;
+            }
+            grijq._trigger('editcomplete', null, {val: null, cell: grijq['selectedCell']});
+            break;
+          case $.ui.keyCode.DOWN:
+          case $.ui.keyCode.ENTER:
             if(editing) {
               return;
             }
@@ -432,13 +376,13 @@
 
       // timings.push(['building column types', new Date()]);
       if(grijq.options.columns.length === 0) {
-        $('tr:last', grijq.headerTable).children().each(function() {
+        $('tr:last', grijq.element).children().each(function() {
           grijq.options.columns.push(columnBuilder.apply(this));
         });
       }
 
       // timings.push(['setting top', new Date()]);
-      grijq.verticalScroller.css('top', grijq.headerTable.height());
+      grijq.scroller.css('margin-top', grijq.head.height());
 
       // timings.push(['movement done', new Date()]);
       // setTimeout(function() {
@@ -462,7 +406,7 @@
     _clearSelection: function() {
       if(this['selectedColumn']) {
         this['selectedHeader'].removeClass('ui-state-active');
-        this['selectedColumn'].removeClass('ui-state-active');
+        this['selectedColumn'].removeClass('ui-state-default');
       }
       if(this['currentEditor']) {
         var value = this['currentEditor'].unedit(this['selectedCell']);
