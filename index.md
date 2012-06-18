@@ -13,7 +13,8 @@ Just say "gridge". The "q" is silent.
 
 ## Examples
 
-* [A 1000-row grid built on demand with the theme switcher widget](examples/lots-of-rows.html)
+* [A 1000-row grid ](examples/lots-of-rows.html)
+* [A 1000-row grid with divs (much faster)](examples/lots-of-rows-with-divs.html)
 
 ## Usage
 
