@@ -2,23 +2,41 @@
 <html>
   <head>
     <title>Lots of Rows</title>
-    <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE">
-    <link rel="stylesheet" type="text/css" href="../stylesheets/cssreset-min.css">
-    <link rel="stylesheet" type="text/css" href="../stylesheets/jquery-ui-1.8.21.css">
-    <link rel="stylesheet" type="text/css" href="../stylesheets/cssfonts-min.css">
-    <link rel="stylesheet" type="text/css" href="../stylesheets/jquery.ui.grijq.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE; chrome=1">
+    <link rel="stylesheet" href="../stylesheets/cssreset-min.css">
+    <link rel="stylesheet" href="../stylesheets/jquery-ui-1.8.21.css">
+    <link rel="stylesheet" href="../stylesheets/cssfonts-min.css">
+    <link rel="stylesheet" href="../stylesheets/jquery.ui.grijq.css">
+    <link rel="stylesheet" href="../stylesheets/styles.css">
+    <link rel="stylesheet" href="../stylesheets/pygment_trac.css">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
     <style type="text/css">
+      html,
+      body.yui3-cssfonts,
+      .yui3-cssfonts *,
+      .yui3-cssfonts select,
+      .yui3-cssfonts input,
+      .yui3-cssfonts button,
+      .yui3-cssfonts textarea {
+        font: 200 13px/1.5 Lato,"Helvetica Neue",Helvetica,Arial,sans-serif;
+      }
+      #switcher a span {
+        line-height: normal;
+      }
       p {
         margin-top: 1em;
         display: none;
         clear: both;
       }
-      #switcher {
-        display: inline-block;
-        float: right;
+      header p {
+        display: block;
       }
-      #clear-choice {
-        float: right;
+      .center {
+        text-align: center;
       }
     </style>
     <script src="../javascripts/jquery-1.7.2.min.js"></script>
@@ -28,7 +46,14 @@
     <script type="text/javascript" src="http://jqueryui.com/themeroller/themeswitchertool/"></script>
     <script>
       $(function() {
-        $('#switcher').themeswitcher();
+        $('#switcher')
+          .themeswitcher()
+          .height(40)
+          .width(152)
+          .css({
+            margin: 'auto',
+            'line-height': 1
+          });
         $('#clear-choice').button().click(function() {
           $.cookie('jquery-ui-theme', null);
           location.href = location.href;
@@ -50,10 +75,39 @@
     </script>
   </head>
   <body>
-    <nav><div><a href="../">grijq project page</a></div></nav>
-    <button id="mkeditable">Make editable table from raw table</button>
-    <button id="clear-choice">Clear theme</button>
-    <span id="switcher"></span>
+    <div class="wrapper">
+      <header>
+        <h1>grijq</h1>
+        <h2>1000 rows</h2>
+        <nav><div><a href="../">back to the main page</a></div></nav>
+        <div>
+<div class="hlcode">
+<div class="syntax"><pre><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#inline-data&#39;</span><span class="p">).</span><span class="nx">grijq</span><span class="p">({</span>
+  <span class="nx">height</span><span class="o">:</span> <span class="mi">300</span><span class="p">,</span>
+  <span class="nx">editcomplete</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">cell</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">cell</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">val</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">val</span><span class="p">;</span>
+    <span class="nx">cell</span><span class="p">.</span><span class="nx">children</span><span class="p">().</span><span class="nx">html</span><span class="p">(</span><span class="nx">val</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</pre></div>
+        </div>
+        <p>
+          See that big ugly table on the right (or below)? Let's make it
+          prettier with <strong>grijq</strong>. Click this button, here.
+        </p>
+        <div class="yui3-cssreset yui3-cssfonts center">
+          <button id="mkeditable">Make editable grid from table</button>
+        </div>
+        <p>
+          Don't like the theme? You can change that, too.
+        </p>
+        <div class="yui3-cssreset yui3-cssfonts center">
+          <div id="switcher" class="ui-helper-reset"></div>
+          <button id="clear-choice">Clear theme</button>
+        </div>
+      </header>
+      <section class="yui3-cssreset yui3-cssfonts">
     <p id="editable">Editable Table. <span id="editable-time"></span></p>
     <table width="1460" id="inline-data">
       <colgroup>
@@ -1095,5 +1149,12 @@
         <tr><td>8558</td><td>30362</td><td>6/15/2012</td><td>Snowbound Chapel</td><td>New Rochelle</td><td>HHEEJ-EAA</td><td>Super Midstream Oil Company</td><td>Sludge</td><td>77</td><td>75</td><td>0.25</td><td>129&prime; 8&Prime; 2/8</td><td>74</td><td>114&prime; 8&Prime; 6/8</td><td>71</td></tr>
       </tbody>
     </table>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/realistschuckle">realistschuckle</a></p>
+        <p><small>Powered by <a href="https://github.com/mojombo/jekyll">jekyll</a>. Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="../javascripts/scale.fix.js"></script>
   </body>
 </html>
