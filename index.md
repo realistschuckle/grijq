@@ -7,6 +7,10 @@ title:  grijq by realistschuckle
 A ThemeRoller-ready data grid widget for jQuery UI that consumes normal HTML
 tables.
 
+## Pronunciation
+
+Just say "gridge". The "q" is silent.
+
 ## Examples
 
 * [A 1000-row grid built on demand with the theme switcher widget](examples/lots-of-rows.html)
