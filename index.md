@@ -93,9 +93,9 @@ couple of days putting one together.
 ## Notes
 
 On Chrome and Firefox, the parsing and rendering of a table takes no real
-difference if your source contains a raw table or a pre-formatted table.
+difference if your source contains a table with or without divs.
 
-On Internet Explorer, the pre-formatted table takes an apreciably shorter time
+On Internet Explorer, the table with divs takes an apreciably shorter time
 to render.
 
 ## Works well on
