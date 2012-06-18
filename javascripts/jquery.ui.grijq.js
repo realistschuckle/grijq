@@ -181,7 +181,6 @@
       grijq.element
         .addClass('ui-widget ui-widget-content')
         .after(grijq.widget)
-        .appendTo(grijq.scroller)
         .children('tbody')
           .find('td')
             .wrapInner('<div></div>')
@@ -202,6 +201,15 @@
             })
           .end();
       grijq.head = grijq.element.children('thead');
+
+      if(ie) {
+        var dom = grijq.element.get(0);
+        dom.style.display = 'none';
+        grijq.element.appendTo(grijq.scroller);
+        dom.style.display = '';
+      } else {
+        grijq.element.appendTo(grijq.scroller);
+      }
 
       // timings.push(['copying editors', new Date()]);
       for(var key in editors) {
