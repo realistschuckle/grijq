@@ -383,7 +383,7 @@
 
       // timings.push(['building column types', new Date()]);
       if(grijq.options.columns.length === 0) {
-        $('tr:last', grijq.element).children().each(function() {
+        $('tr:last', grijq.head).children().each(function() {
           grijq.options.columns.push(columnBuilder.apply(this));
         });
       }
@@ -402,7 +402,7 @@
       // }, 1);
     },
     selectLastRow: function() {
-      var cell = this.bodyTable.find('tr').last().children(':not(.readonly)').first();
+      var cell = this.element.find('tr').last().children(':not(.readonly)').first();
       if(this['selectedCell'] && this['selectedCell'].length && cell.length && this['selectedCell'][0] === cell[0]) {
         return;
       }
