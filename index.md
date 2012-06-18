@@ -16,6 +16,33 @@ Just say "gridge". The "q" is silent.
 * [A 1000-row grid ](examples/lots-of-rows.html)
 * [A 1000-row grid with divs (much faster)](examples/lots-of-rows-with-divs.html)
 
+## API
+
+### Options
+
+| Name     | Type          | Purpose                                                                              |
+| -------- | ------------- | ------------------------------------------------------------------------------------ |
+| width    | int or 'auto' | The width of the rendered table. Default: *'auto'*                                   |
+| height   | int or 'auto' | The height of the rendered table. Default: *'auto'*                                  |
+| readonly | boolean       | A flag to indicate that the entire table is readonly.                                |
+| hasDivs  | boolean       | A flag to indicate that cell content has div elements.                               |
+| newrow   | function      | A callback to indicate a new row should be added to the table.                       |
+| columns  | array         | An array of objects with an entry 'type' to associate a column with an editor.       |
+| editors  | object        | An object of objects that provides the `edit` and `unedit` functions for an editor.  |
+
+### Methods
+
+| Name          | Purpose                     |
+| ------------- | --------------------------- |
+| selectLastRow | Yeah, selects the last row. |
+
+### Events
+
+| Name         | Arguments                           | Happens when...                            |
+| ------------ | ----------------------------------- | ------------------------------------------ |
+| rowselected  | {row: [DOM element]}                | Fired when a user selects a new row.       |
+| editcomplete | {val: [value], cell: [DOM element]} | Fired when a user finishes editing a cell. |
+
 ## Usage
 
 {% highlight html %}
