@@ -154,6 +154,7 @@
       height: 'auto',
       readonly: false,
       newrow: true,
+      hasDivs: false,
       columns: [],
       editors: {}
     },
@@ -181,11 +182,6 @@
       grijq.element
         .addClass('ui-widget ui-widget-content')
         .after(grijq.widget)
-        .children('tbody')
-          .find('td')
-            .wrapInner('<div></div>')
-          .end()
-        .end()
         .children('thead')
           .addClass('ui-widget-header ui-state-default')
           .find('th')
@@ -201,6 +197,9 @@
             })
           .end();
       grijq.head = grijq.element.children('thead');
+      if(!grijq.options.hasDivs) {
+        $('td', grijq.element).wrapInner('<div></div>');
+      }
 
       if(ie) {
         var dom = grijq.element.get(0);
