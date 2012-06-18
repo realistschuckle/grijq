@@ -1,0 +1,82 @@
+.unselectable {
+  -moz-user-select: -moz-none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+} 
+
+.ui-grijq {
+  clear: both;
+  position: relative;
+  overflow: hidden;
+}
+
+.ui-grijq .ui-grijq-scroll {
+  overflow: scroll;
+}
+
+.ui-grijq .ui-grijq-scroll .ui-widget {
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+
+.ui-grijq .ui-grijq-scroll .ui-widget thead {
+  position: absolute;
+  top: 0;
+  left: -1px;
+}
+
+.ui-grijq .ui-grijq-scroll .ui-widget td,
+.ui-grijq .ui-grijq-scroll .ui-widget th,
+.ui-grijq .ui-grijq-scroll .ui-widget tr,
+.ui-grijq .ui-grijq-scroll .ui-widget tbody {
+  border: inherit;
+}
+
+.ui-grijq .ui-grijq-scroll .ui-widget td,
+.ui-grijq .ui-grijq-scroll .ui-widget th {
+  white-space: nowrap;
+  cursor: default;
+}
+
+.ui-grijq .ui-grijq-scroll .ui-widget td {
+  padding: 2px 6px;
+}
+
+.ui-grijq .ui-grijq-scroll .ui-widget td.editing {
+  padding: 0;
+}
+
+.ui-grijq .ui-grijq-scroll .ui-widget td.editing input {
+  padding: 2px 6px;
+  border: 0;
+}
+
+.ui-grijq .ui-grijq-scroll .ui-widget div {
+  width: inherit;
+  overflow: hidden;
+}
+
+.ui-grijq .ui-grijq-scroll .ui-widget .ui-widget-header div {
+  position: relative;
+}
+
+.ui-grijq .resizer {
+  background-color: gray;
+  position: absolute;
+  display: none;
+  top: 0;
+  left: 0;
+  width: 4px;
+}
+
+.ui-grijq .ui-widget-header .mover {
+  position: absolute;
+  right: 0;
+  top: 0;
+  text-indent: -1000000px;
+  padding: 2px;
+  cursor: col-resize;
+}
+
