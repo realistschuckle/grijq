@@ -79,11 +79,35 @@
         <h2>All the options</h2>
         <nav><div><a href="../">back to the main page</a></div></nav>
         <div>
-          <!-- code here -->
+<div class="highlight"><pre><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#inline-data&#39;</span><span class="p">).</span><span class="nx">grijq</span><span class="p">({</span>
+  <span class="nx">height</span><span class="o">:</span> <span class="mi">300</span><span class="p">,</span>
+  <span class="nx">width</span><span class="o">:</span> <span class="mi">400</span><span class="p">,</span>
+  <span class="nx">editcomplete</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#editcomplete&#39;</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">val</span><span class="p">);</span>
+  <span class="p">},</span>
+  <span class="nx">rowselected</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#rowselected&#39;</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">row</span><span class="p">.</span><span class="nx">text</span><span class="p">());</span>
+  <span class="p">},</span>
+  <span class="nx">newrow</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">row</span> <span class="o">=</span> <span class="s1">&#39;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;&#39;</span><span class="p">;</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#inline-data&#39;</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="nx">row</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#selectLastRow&#39;</span><span class="p">).</span><span class="nx">button</span><span class="p">().</span><span class="nx">click</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#inline-data&#39;</span><span class="p">).</span><span class="nx">grijq</span><span class="p">(</span><span class="s1">&#39;selectLastRow&#39;</span><span class="p">);</span>
+<span class="p">});</span>
+<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#options input&#39;</span><span class="p">).</span><span class="nx">change</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">value</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">value</span><span class="p">;</span>
+  <span class="k">if</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">checked</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">value</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">data</span><span class="p">(</span><span class="s1">&#39;unvalue&#39;</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#inline-data&#39;</span><span class="p">).</span><span class="nx">grijq</span><span class="p">(</span><span class="s1">&#39;option&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span> <span class="nx">value</span><span class="p">);</span>
+<span class="p">});</span>
+</pre></div>
         </div>
         <p>
-          Wow, that's a pretty nice table to the left. It'd be nice to play
-          with it, eh? Click some of the clicky things below.
+          Wow, that's a pretty nice table to the left (or below). It'd be nice
+          to play with it, eh? Click some of the clicky things below.
         </p>
         <div id="options" class="yui3-cssreset yui3-cssfonts">
           <div><input type="checkbox" checked="checked" value="auto" data-unvalue="400" id="width"> <label for="width">Width 400px</label></div> 
