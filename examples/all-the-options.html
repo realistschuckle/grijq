@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>All the Options</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE; chrome=1">
+    <link rel="stylesheet" href="../stylesheets/cssreset-min.css">
+    <link rel="stylesheet" href="../stylesheets/jquery-ui-1.8.21.css">
+    <link rel="stylesheet" href="../stylesheets/cssfonts-min.css">
+    <link rel="stylesheet" href="../stylesheets/jquery.ui.grijq.css">
+    <link rel="stylesheet" href="../stylesheets/styles.css">
+    <link rel="stylesheet" href="../stylesheets/pygment_trac.css">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <style type="text/css">
+      html,
+      body.yui3-cssfonts,
+      .yui3-cssfonts *,
+      .yui3-cssfonts select,
+      .yui3-cssfonts input,
+      .yui3-cssfonts button,
+      .yui3-cssfonts textarea {
+        font: 200 13px/1.5 Lato,"Helvetica Neue",Helvetica,Arial,sans-serif;
+      }
+      #switcher a span {
+        line-height: normal;
+      }
+      p {
+        margin-top: 1em;
+        display: none;
+        clear: both;
+      }
+      header p {
+        display: block;
+      }
+      .center {
+        text-align: center;
+      }
+    </style>
+    <script src="../javascripts/jquery-1.7.2.min.js"></script>
+    <script src="../javascripts/jquery-ui-1.8.21.min.js"></script>
+    <script src="../javascripts/jquery.ui.grijq.js"></script>
+    <script src="../javascripts/data.js"></script>
+    <script type="text/javascript" src="http://jqueryui.com/themeroller/themeswitchertool/"></script>
+    <script>
+      $(function() {
+        $('#inline-data').grijq({
+          height: 300,
+          width: 400,
+          editcomplete: function(e, data) {
+            $('#editcomplete').html(data.val);
+          },
+          rowselected: function(e, data) {
+            $('#rowselected').html(data.row.text());
+          },
+          newrow: function() {
+            var row = '<tr><td>&nbsp;</td><td></td><td></td></tr>';
+            $('#inline-data').append(row);
+          }
+        });
+        $('#selectLastRow').button().click(function() {
+          $('#inline-data').grijq('selectLastRow');
+        });
+        $('#options input').change(function() {
+          var value = this.value;
+          if(this.checked) {
+            value = $(this).data('unvalue');
+          }
+          $('#inline-data').grijq('option', this.id, value);
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>grijq</h1>
+        <h2>All the options</h2>
+        <nav><div><a href="../">back to the main page</a></div></nav>
+        <div>
+          <!-- code here -->
+        </div>
+        <p>
+          Wow, that's a pretty nice table to the left. It'd be nice to play
+          with it, eh? Click some of the clicky things below.
+        </p>
+        <div id="options" class="yui3-cssreset yui3-cssfonts">
+          <div><input type="checkbox" checked="checked" value="auto" data-unvalue="400" id="width"> Width 400px</div> 
+          <div><input type="checkbox" checked="checked" value="auto" data-unvalue="300" id="height"> Height 300px</div> 
+          <div><input type="checkbox" value="" data-unvalue="true" id="readonly"> Read only</div>
+        </div>
+        <p class="yui3-cssreset yui3-cssfonts"><button id="selectLastRow">Select last row</button></p>
+        <p class="yui3-cssreset yui3-cssfonts">Edit complete: <span id="editcomplete"></span></p>
+        <p class="yui3-cssreset yui3-cssfonts">Row selected: <span id="rowselected"></span></p>
+      </header>
+      <section class="yui3-cssreset yui3-cssfonts">
+        <table width="600" id="inline-data" style="width: 599px">
+          <colgroup>
+            <col width="125">
+            <col width="75">
+            <col width="400">
+          </colgroup>
+          <thead>
+            <tr>
+              <th>Song</th>
+              <th>Length</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Code Monkey</td>
+              <td>3:10</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>Ikea</td>
+              <td>3:05</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>I Feel Fantastic</td>
+              <td>3:06</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>Mandelbrot Set</td>
+              <td>4:22</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>Tom Cruise Crazy</td>
+              <td>3:42</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>Shop Vac</td>
+              <td>3:31</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>Chiron Beta Prime</td>
+              <td>2:51</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>I'm Your Moon</td>
+              <td>3:15</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>My Monkey</td>
+              <td>2:47</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>Skullcrusher Mountain</td>
+              <td>4:20</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>I Crush Everything</td>
+              <td>4:45</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>When You Go</td>
+              <td>3:53</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>A Talk with George</td>
+              <td>3:06</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>You Ruined Everything</td>
+              <td>2:18</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>Creepy Doll</td>
+              <td>4:01</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>Mr. Fancy Pants</td>
+              <td>1:21</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>Baby Got Back</td>
+              <td>5:32</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>First of May</td>
+              <td>4:12</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>Re: Your Brains</td>
+              <td>4:32</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>The Future Soon</td>
+              <td>3:50</td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/realistschuckle">realistschuckle</a></p>
+        <p><small>Powered by <a href="https://github.com/mojombo/jekyll">jekyll</a>. Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="../javascripts/scale.fix.js"></script>
+  </body>
+</html>

@@ -10,7 +10,7 @@
     , DASH = 109
     , NUM_DOT = 110
     , editing = false
-    , ie = (!+'\v1')
+    , ie = /*@cc_on!@*/0
     , editors = {
         'date': {
           'edit': function(target, options) {
@@ -160,7 +160,7 @@
     },
     _create: function() {
       var grijq = this
-        , minWidth = ie? 1 : 0
+        , minWidth = 1 //ie? 1 : 0
         , iefocus = null
         , getCol = function(offset, table) {
                      offset = offset || 0;
@@ -185,16 +185,8 @@
         .children('thead')
           .addClass('ui-widget-header ui-state-default')
           .find('th')
-            .append('<span class="mover">.</span>')
+            .append(ie? '<span class="mover ie">.</span>' : '<span class="mover">.</span>')
             .wrapInner('<div></div>')
-            .each(function(i) {
-              var $this = $(this);
-              var pad = parseInt($this.css('padding-left')) + 
-                        parseInt($this.css('padding-right'));
-              $(this)
-                .attr('data-index', i)
-                .width(+$(grijq.cols[i]).prop('width') - 1 - pad);
-            })
           .end();
       grijq.head = grijq.element.children('thead');
       if(!grijq.options.hasDivs) {
@@ -221,7 +213,7 @@
       grijq.scroller
         .height(this.options.height)
         .scroll(function() {
-          grijq.head.css('left', -grijq.scroller.scrollLeft());
+          grijq.head.css('left', -grijq.scroller.scrollLeft() - 1);
         });
 
       // timings.push(['setting focus', new Date()]);
@@ -242,7 +234,7 @@
           grijq._clearSelection();
           var oldrow = grijq['selectedRow'];
           grijq['selectedRow'] = row.addClass('ui-state-default');
-          if(oldrow && oldrow.get(0) !== row.get(0)) {
+          if(typeof oldrow === 'undefined' || oldrow === null || oldrow.get(0) !== row.get(0)) {
             grijq._trigger('rowselected', null, {row: row});
           } else {
             cell.parent().children(':not(.readonly)').prop('tabindex', '0');
@@ -280,6 +272,14 @@
           grijq['selectedHeader'] = $(this).addClass('ui-state-active');
           col.addClass('ui-state-default');
           grijq['selectedColumn'] = col;
+        })
+        .each(function(i) {
+          var $this = $(this);
+          var pad = parseInt($this.css('padding-left')) + 
+                    parseInt($this.css('padding-right'));
+          $(this)
+            .attr('data-index', i)
+            .width(+$(grijq.cols[i]).prop('width') - 1 - pad);
         });
 
       // timings.push(['setting mover functionality', new Date()]);
@@ -291,14 +291,19 @@
                   return grijq.columnResizer.show()[0];
                 },
         stop: function(event, ui) {
+                var th = $(this).closest('th');
+                var pad = parseInt(th.css('padding-left')) + 
+                          parseInt(th.css('padding-right'));
                 var offset = ui.position.left - ui.originalPosition.left;
-                var index = $(this).closest('th').prevAll().length;
+                var index = th.prevAll().length;
                 var col = $(grijq.cols.get(index));
-                var newColWidth = Math.max(minWidth, offset + parseInt(col.prop('width')));
+                var newColWidth = Math.max(pad + 5, Math.max(minWidth, offset + parseInt(col.prop('width'))));
                 col.prop('width', newColWidth);
-                $(grijq.head.children().first().children().get(index)).width(newColWidth - 1);
+                var newHeaderWidth = Math.max(minWidth, newColWidth - 1 - pad);
+                $(grijq.head.children().first().children().get(index)).width(newHeaderWidth);
                 var newTableWidth = Math.max(minWidth, offset + parseInt(grijq.element.prop('width')));
                 grijq.element.prop('width', newTableWidth);
+                grijq.element.css('width', newTableWidth);
               }
       });
 
@@ -310,7 +315,7 @@
         var target = $(e.target);
         switch(e.keyCode) {
           case $.ui.keyCode.TAB:
-            if((e.target.nodeName.toLowerCase() === 'td' || (editing && target.closest('td').next().length === 0)) && typeof grijq.options.newrow === 'function' && target.next().length === 0 && target.parent().next().length === 0) {
+            if(!e.shiftKey && (e.target.nodeName.toLowerCase() === 'td' || (editing && target.closest('td').next().length === 0)) && typeof grijq.options.newrow === 'function' && target.next().length === 0 && target.parent().next().length === 0) {
               grijq.options.newrow();
               target.parent().next().children(':not(.readonly)').prop('tabindex', 0);
             }
@@ -430,8 +435,20 @@
     _setOption: function(key, value) {
       $.Widget.prototype._setOption.apply(this, arguments);
       if(key === 'height') {
-        this.wrapper.height(value);
-        this.verticalScroller.height(value - 25);
+        this.options.height = value === 'auto'? value : parseInt(value) - 25;
+        this.scroller.height(this.options.height);
+      } else if(key === 'width') {
+        this.options.width = value === 'auto'? value : parseInt(value);
+        value = this.options.width === 'auto'? '' : value + 'px';
+        this.scroller.css('max-width', value);
+        this.widget.css('max-width', value);
+      } else if(key === 'readonly') {
+        this.options.width = !!value;
+        if(value) {
+          this.element.addClass('ui-state-disabled');
+        } else {
+          this.element.removeClass('ui-state-disabled');
+        }
       }
     },
     _init: function() {

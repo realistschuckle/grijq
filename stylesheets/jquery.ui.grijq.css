@@ -40,6 +40,10 @@
   cursor: default;
 }
 
+.ui-grijq .ui-grijq-scroll .ui-widget th {
+  padding: 2px 0 2px 6px;
+}
+
 .ui-grijq .ui-grijq-scroll .ui-widget td {
   padding: 2px 6px;
 }
@@ -76,7 +80,10 @@
   right: 0;
   top: 0;
   text-indent: -1000000px;
-  padding: 2px;
+  width: 4px;
   cursor: col-resize;
 }
 
+.ui-grijq .ui-widget-header .mover.ie {
+  background-color: white;
+}
