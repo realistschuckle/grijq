@@ -242,7 +242,7 @@
           grijq['selectedCell'] = cell.addClass('ui-state-active');
           if(ie) {
             clearTimeout(iefocus);
-            iefocus = setTimeout(function() {cell.focus();}, 200);
+            iefocus = setTimeout(function() {cell.focus();}, 0);
           }
         })
         .click(function(e) {
@@ -388,7 +388,7 @@
 
       // timings.push(['building column types', new Date()]);
       if(grijq.options.columns.length === 0) {
-        $('tr:last', grijq.head).children().each(function() {
+        $('tr', grijq.head).last().children().each(function() {
           grijq.options.columns.push(columnBuilder.apply(this));
         });
       }
@@ -396,13 +396,16 @@
       // timings.push(['setting top', new Date()]);
       grijq.scroller.css('margin-top', grijq.head.height());
 
+      $('<style type="text/css">.ui-grijq .ui-grijq-scroll .ui-widget td {height: ' + grijq.head.height() + 'px;}</style>').appendTo(document.head);
+      $('<input style="position: absolute; top: -10000px; left: -10000px;">').appendTo(grijq.scroller);
+
       // timings.push(['movement done', new Date()]);
       // setTimeout(function() {
       //   timings.push(['reflowed', new Date()]);
       //   var baseTime = timings[0][1];
       //   for(var i = 0; i < timings.length; i += 1) {
       //     var offset = timings[i][1].valueOf() - baseTime.valueOf();
-      //     console.log(offset, timings[i][0]);
+      //     --(offset, timings[i][0]);
       //   }
       // }, 1);
     },
