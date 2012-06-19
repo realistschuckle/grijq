@@ -2,10 +2,6 @@
 layout: page
 title:  grijq by realistschuckle
 ---
-# grijq
-
-A ThemeRoller-ready data grid widget for jQuery UI that consumes normal HTML
-tables.
 
 ## Pronunciation
 
