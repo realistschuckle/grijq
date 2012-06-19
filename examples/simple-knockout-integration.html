@@ -38,6 +38,10 @@
       .center {
         text-align: center;
       }
+      #the-code pre {
+        height: 300px;
+        overflow: auto;
+      }
     </style>
     <script src="../javascripts/knockout.js"></script>
     <script src="../javascripts/jquery-1.7.2.min.js"></script>
@@ -114,11 +118,44 @@
     <div class="wrapper">
       <header>
         <h1>grijq</h1>
-        <h2>All the options</h2>
+        <h2>Simple knockout.js integration</h2>
         <nav><div><a href="../">back to the main page</a></div></nav>
         <div>
           <p><a id="see-the-code" href="#">See the code</a></p>
-<div id="the-code" class="highlight"></div>
+<div id="the-code" class="highlight"><pre><span class="c1">// Create the songs list</span>
+<span class="kd">var</span> <span class="nx">songs</span> <span class="o">=</span> <span class="p">[</span>
+  <span class="p">{</span><span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;Code Monkey&#39;</span><span class="p">,</span> <span class="nx">dur</span><span class="o">:</span> <span class="s1">&#39;3:10&#39;</span><span class="p">,</span> <span class="nx">album</span><span class="o">:</span> <span class="s1">&#39;Thing a Week Three&#39;</span><span class="p">},</span>
+  <span class="p">{</span><span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;Ikea&#39;</span><span class="p">,</span> <span class="nx">dur</span><span class="o">:</span> <span class="s1">&#39;3:05&#39;</span><span class="p">,</span> <span class="nx">album</span><span class="o">:</span> <span class="s1">&#39;Smoking Monkey&#39;</span><span class="p">},</span>
+  <span class="p">{</span><span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;I Feel Fantastic&#39;</span><span class="p">,</span> <span class="nx">dur</span><span class="o">:</span> <span class="s1">&#39;3:06&#39;</span><span class="p">,</span> <span class="nx">album</span><span class="o">:</span> <span class="s1">&#39;Our Bodies, Ourselves, Our Cybernetic Arms&#39;</span><span class="p">},</span>
+  <span class="p">{</span><span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;Mandelbrot Set&#39;</span><span class="p">,</span> <span class="nx">dur</span><span class="o">:</span> <span class="s1">&#39;4:22&#39;</span><span class="p">,</span> <span class="nx">album</span><span class="o">:</span> <span class="s1">&#39;Where Tradition Meets Tomorrow&#39;</span><span class="p">}</span>
+<span class="p">];</span>
+
+<span class="c1">// Create the grid and on the</span>
+<span class="c1">// edit complete, write the value</span>
+<span class="c1">// back to the model. On new row,</span>
+<span class="c1">// add a new song to the list and,</span>
+<span class="c1">// after a moment, select the last</span>
+<span class="c1">// row which is the new item.</span>
+<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#inline-data&#39;</span><span class="p">).</span><span class="nx">grijq</span><span class="p">({</span>
+  <span class="nx">height</span><span class="o">:</span> <span class="mi">300</span><span class="p">,</span>
+  <span class="nx">hasDivs</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+  <span class="nx">editcomplete</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">prop</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">cell</span><span class="p">.</span><span class="nx">kobind</span><span class="p">();</span>
+    <span class="kd">var</span> <span class="nx">index</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">cell</span><span class="p">.</span><span class="nx">parent</span><span class="p">().</span><span class="nx">prevAll</span><span class="p">().</span><span class="nx">length</span><span class="p">;</span>
+    <span class="nx">viewmodel</span><span class="p">.</span><span class="nx">songs</span><span class="p">()[</span><span class="nx">index</span><span class="p">][</span><span class="nx">prop</span><span class="p">](</span><span class="nx">data</span><span class="p">.</span><span class="nx">val</span><span class="p">);</span>
+  <span class="p">},</span>
+  <span class="nx">newrow</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">viewmodel</span><span class="p">.</span><span class="nx">songs</span><span class="p">.</span><span class="nx">push</span><span class="p">({</span>
+      <span class="nx">name</span><span class="o">:</span> <span class="nx">ko</span><span class="p">.</span><span class="nx">observable</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">),</span>
+      <span class="nx">dur</span><span class="o">:</span> <span class="nx">ko</span><span class="p">.</span><span class="nx">observable</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">),</span>
+      <span class="nx">album</span><span class="o">:</span> <span class="nx">ko</span><span class="p">.</span><span class="nx">observable</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+    <span class="p">});</span>
+    <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+      <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#inline-data&#39;</span><span class="p">).</span><span class="nx">grijq</span><span class="p">(</span><span class="s1">&#39;selectLastRow&#39;</span><span class="p">);</span>
+    <span class="p">},</span> <span class="mi">0</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</pre></div>
         </div>
         <p>
           I sure do like Jonathan Coulton. It'd be nice to maintain a little

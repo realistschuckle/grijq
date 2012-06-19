@@ -9,6 +9,7 @@ Just say "gridge". The "q" is silent.
 
 ## Examples
 
+* [A simple knockout integration](examples/simple-knockout-integration.html)
 * [Exploring the options](examples/all-the-options.html)
 * [A 1000-row grid ](examples/lots-of-rows.html)
 * [A 1000-row grid with divs (much faster)](examples/lots-of-rows-with-divs.html)
