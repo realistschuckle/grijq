@@ -5,6 +5,11 @@ More at [the project page](http://curtis.schlak.com/grijq/).
 A ThemeRoller-ready data grid widget for jQuery UI that consumes normal HTML
 tables.
 
+## License
+
+I have released this software under the BSD 3-clause license. Please see the
+LICENSE file for details.
+
 ## Motivation
 
 I wanted a data grid that did not rely on JavaScript arrays and special APIs.
