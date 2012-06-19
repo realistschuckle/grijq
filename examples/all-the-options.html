@@ -45,6 +45,16 @@
     <script src="../javascripts/data.js"></script>
     <script>
       $(function() {
+        $('#the-code').hide();
+        $('#see-the-code').toggle(function(e) {
+          e.preventDefault();
+          $(this).html('Hide the code');
+          $('#the-code').show('blind');
+        }, function(e) {
+          e.preventDefault();
+          $(this).html('See the code');
+          $('#the-code').hide('blind');
+        });
         $('#inline-data').grijq({
           height: 300,
           width: 400,
@@ -79,7 +89,8 @@
         <h2>All the options</h2>
         <nav><div><a href="../">back to the main page</a></div></nav>
         <div>
-<div class="highlight"><pre><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#inline-data&#39;</span><span class="p">).</span><span class="nx">grijq</span><span class="p">({</span>
+          <p><a id="see-the-code" href="#">See the code</a></p>
+<div id="the-code" class="highlight"><pre><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#inline-data&#39;</span><span class="p">).</span><span class="nx">grijq</span><span class="p">({</span>
   <span class="nx">height</span><span class="o">:</span> <span class="mi">300</span><span class="p">,</span>
   <span class="nx">width</span><span class="o">:</span> <span class="mi">400</span><span class="p">,</span>
   <span class="nx">editcomplete</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
