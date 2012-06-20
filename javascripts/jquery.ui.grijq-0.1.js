@@ -223,10 +223,10 @@
           var row = cell.parent();
           if(cell.next().length === 0) {
             var nextRow = row.next();
-            nextRow.children(':not(.readonly)').prop('tabindex', '0');
+            nextRow.children().prop('tabindex', '0');
           } else if(cell.prev().length === 0) {
             var previousRow = row.prev();
-            previousRow.children(':not(.readonly)').prop('tabindex', '0');
+            previousRow.children().prop('tabindex', '0');
           }
           if(grijq['selectedCell'] && grijq['selectedCell'].length && cell.length && grijq['selectedCell'][0] === cell[0]) {
             return;
@@ -237,7 +237,7 @@
           if(typeof oldrow === 'undefined' || oldrow === null || oldrow.get(0) !== row.get(0)) {
             grijq._trigger('rowselected', null, {row: row});
           } else {
-            cell.parent().children(':not(.readonly)').prop('tabindex', '0');
+            cell.parent().children().prop('tabindex', '0');
           }
           grijq['selectedCell'] = cell.addClass('ui-state-active');
           if(ie) {
@@ -250,7 +250,7 @@
           if(grijq['selectedCell'] && grijq['selectedCell'].length && cell.length && grijq['selectedCell'][0] === cell[0]) {
             return;
           }
-          cell.parent().children(':not(.readonly)').prop('tabindex', '0');
+          cell.parent().children().prop('tabindex', '0');
           grijq._clearSelection();
           grijq['selectedCell'] = cell.trigger('focus');
         });
@@ -317,7 +317,7 @@
           case $.ui.keyCode.TAB:
             if(!e.shiftKey && (e.target.nodeName.toLowerCase() === 'td' || (editing && target.closest('td').next().length === 0)) && typeof grijq.options.newrow === 'function' && target.next().length === 0 && target.parent().next().length === 0) {
               grijq.options.newrow();
-              target.parent().next().children(':not(.readonly)').prop('tabindex', 0);
+              target.parent().next().children().prop('tabindex', 0);
             }
             break;
           case $.ui.keyCode.LEFT:
@@ -340,7 +340,7 @@
             }
             var index = target.prevAll().length + 1;
             var tr = target.closest('tr').prev();
-            tr.children(':not(.readonly)').prop('tabindex', '0');
+            tr.children().prop('tabindex', '0');
             $(':nth-child(' + index + ')', tr).focus();
             e.preventDefault();
             break;
@@ -357,7 +357,7 @@
             }
             var index = target.prevAll().length + 1;
             var tr = target.closest('tr').next();
-            tr.children(':not(.readonly)').prop('tabindex', '0');
+            tr.children().prop('tabindex', '0');
             $(':nth-child(' + index + ')', tr).focus();
             e.preventDefault();
             break;
@@ -410,11 +410,11 @@
       // }, 1);
     },
     selectLastRow: function() {
-      var cell = this.element.find('tr').last().children(':not(.readonly)').first();
+      var cell = this.element.find('tr').last().children().first();
       if(this['selectedCell'] && this['selectedCell'].length && cell.length && this['selectedCell'][0] === cell[0]) {
         return;
       }
-      cell.parent().children(':not(.readonly)').prop('tabindex', '0');
+      cell.parent().children().prop('tabindex', '0');
       this._clearSelection();
       this['selectedCell'] = cell.trigger('focus');
     },
