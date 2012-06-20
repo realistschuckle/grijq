@@ -38,6 +38,10 @@
       .center {
         text-align: center;
       }
+      #the-code pre {
+        height: 300px;
+        overflow: auto;
+      }
     </style>
     <script src="../javascripts/jquery-1.7.2.min.js"></script>
     <script src="../javascripts/jquery-ui-1.8.21.min.js"></script>
@@ -78,6 +82,13 @@
             value = $(this).data('unvalue');
           }
           $('#inline-data').grijq('option', this.id, value);
+        });
+        $('#col3-type').change(function(e) {
+          $('#inline-data').grijq('option', 'columns', [
+            {type: 'text'},
+            {type: 'text'},
+            {type: $(this).val()}
+          ]);
         });
       });
     </script>
@@ -124,6 +135,14 @@
           <div><input type="checkbox" checked="checked" value="auto" data-unvalue="400" id="width"> <label for="width">Width 400px</label></div> 
           <div><input type="checkbox" checked="checked" value="auto" data-unvalue="300" id="height"> <label for="height">Height 300px</label></div> 
           <div><input type="checkbox" value="" data-unvalue="true" id="readonly"> <label for="readonly">Read only</label></div>
+          <div>
+            Notes column is
+            <select id="col3-type">
+              <option value="text">text</option>
+              <option value="date">a date</option>
+              <option value="number">a number</option>
+            </select>
+          </div>
         </div>
         <p class="yui3-cssreset yui3-cssfonts"><button id="selectLastRow">Select last row</button></p>
         <p class="yui3-cssreset yui3-cssfonts">Edit complete: <span id="editcomplete"></span></p>

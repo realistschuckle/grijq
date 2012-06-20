@@ -96,20 +96,26 @@
         },
         'number': {
           'edit': function(target) {
+            var keyHandler = function(e) {
+              if(e.keyCode === $.ui.keyCode.TAB || e.keyCode === $.ui.keyCode.LEFT || e.keyCode === $.ui.keyCode.UP || e.keyCode === $.ui.keyCode.RIGHT || e.keyCode === $.ui.keyCode.DOWN || e.keyCode === $.ui.keyCode.BACKSPACE || e.keyCode === $.ui.keyCode.DELETE) {
+                return;
+              }
+              if((e.keyCode < ZERO || e.keyCode > NINE) && (e.keyCode < NUM_ZERO || e.keyCode > NUM_NINE) && e.keyCode !== DOT && e.keyCode !== DASH && e.keyCode !== NUM_DOT) {
+                e.preventDefault();
+              }
+            };
             target.addClass('editing');
             var input = $('<input>').val(target.text())
                                     .width(target.width() - 12)
-                                    .keydown(function(e) {
-                                      if(e.keyCode === $.ui.keyCode.TAB || e.keyCode === $.ui.keyCode.LEFT || e.keyCode === $.ui.keyCode.UP || e.keyCode === $.ui.keyCode.RIGHT || e.keyCode === $.ui.keyCode.DOWN || e.keyCode === $.ui.keyCode.BACKSPACE || e.keyCode === $.ui.keyCode.DELETE) {
-                                        return;
-                                      }
-                                      if((e.keyCode < ZERO || e.keyCode > NINE) && (e.keyCode < NUM_ZERO || e.keyCode > NUM_NINE) && e.keyCode !== DOT && e.keyCode !== DASH && e.keyCode !== NUM_DOT) {
-                                        e.preventDefault();
-                                      }
-                                    });
+                                    .keydown(keyHandler);
             target.children().hide().end().append(input);
             input.select();
             input.focus();
+            setTimeout(function() {
+              if(isNaN(+input.val())) {
+                input.val('');
+              }
+            }, 0);
           },
           'unedit': function(target) {
             editing = false;
@@ -452,6 +458,8 @@
         } else {
           this.element.removeClass('ui-state-disabled');
         }
+      } else if(key === 'columns') {
+        this.options.columns = value;
       }
     },
     _init: function() {
