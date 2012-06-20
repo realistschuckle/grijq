@@ -259,6 +259,18 @@
           cell.parent().children().prop('tabindex', '0');
           grijq._clearSelection();
           grijq['selectedCell'] = cell.trigger('focus');
+        })
+        .dblclick(function(e) {
+          clearTimeout(iefocus);
+          var target = $(e.target).closest('td');
+          if(grijq.options.readonly || editing || target.hasClass('readonly') || target.parent().hasClass('readonly')) {
+            return;
+          }
+          editing = true;
+          var index = target.prevAll().length;
+          var editor = grijq.options.columns[index];
+          grijq['currentEditor'] = grijq.options.editors[editor['type']];
+          grijq['currentEditor'].edit(target, editor['options']);
         });
 
       // timings.push(['setting widths', new Date()]);
