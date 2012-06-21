@@ -301,7 +301,7 @@
         });
 
       // timings.push(['setting mover functionality', new Date()]);
-      $('.mover', grijq.headerTable).draggable({
+      $('.mover', grijq.head).draggable({
         axis: 'x',
         helper: function() {
                   grijq.widget.append(grijq.columnResizer);
