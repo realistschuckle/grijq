@@ -248,7 +248,7 @@
           grijq['selectedCell'] = cell.addClass('ui-state-active');
           if(ie) {
             clearTimeout(iefocus);
-            iefocus = setTimeout(function() {cell.focus();}, 0);
+            iefocus = setTimeout(function() {cell.focus();}, 200);
           }
         })
         .click(function(e) {
@@ -356,10 +356,10 @@
             if(editing) {
               return;
             }
-            var index = target.prevAll().length + 1;
+            var index = target.prevAll().length;
             var tr = target.closest('tr').prev();
             tr.children().prop('tabindex', '0');
-            $(':nth-child(' + index + ')', tr).focus();
+            $(tr.children()[index]).focus();
             e.preventDefault();
             break;
           case $.ui.keyCode.DELETE:
@@ -373,10 +373,10 @@
             if(editing) {
               return;
             }
-            var index = target.prevAll().length + 1;
+            var index = target.prevAll().length;
             var tr = target.closest('tr').next();
             tr.children().prop('tabindex', '0');
-            $(':nth-child(' + index + ')', tr).focus();
+            $(tr.children()[index]).focus();
             e.preventDefault();
             break;
           case F2:
