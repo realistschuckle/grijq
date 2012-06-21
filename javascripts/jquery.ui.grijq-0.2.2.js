@@ -242,7 +242,6 @@
           grijq['selectedRow'] = row.addClass('ui-state-default');
           if(typeof oldrow === 'undefined' || oldrow === null || oldrow.get(0) !== row.get(0)) {
             grijq._trigger('rowselected', null, {row: row});
-          } else {
             cell.parent().children().prop('tabindex', '0');
           }
           grijq['selectedCell'] = cell.addClass('ui-state-active');
@@ -252,6 +251,9 @@
           }
         })
         .click(function(e) {
+          if(ie) {
+            return;
+          }
           var cell = $(e.target).closest('td');
           if(grijq['selectedCell'] && grijq['selectedCell'].length && cell.length && grijq['selectedCell'][0] === cell[0]) {
             return;
