@@ -248,7 +248,7 @@
           grijq['selectedCell'] = cell.addClass('ui-state-active');
           if(ie) {
             clearTimeout(iefocus);
-            iefocus = setTimeout(function() {cell.focus();}, 0);
+            iefocus = setTimeout(function() {cell.focus();}, 200);
           }
         })
         .click(function(e) {
