@@ -355,10 +355,7 @@
             e.preventDefault();
             break;
           case $.ui.keyCode.UP:
-            if(editing) {
-              return;
-            }
-            var index = target.prevAll().length;
+            var index = target.closest('td').prevAll().length;
             var tr = target.closest('tr').prev();
             tr.children().prop('tabindex', '0');
             $(tr.children()[index]).focus();
@@ -370,12 +367,17 @@
             }
             grijq._trigger('editcomplete', null, {val: null, cell: grijq['selectedCell']});
             break;
-          case $.ui.keyCode.DOWN:
-          case $.ui.keyCode.ENTER:
-            if(editing) {
+          case $.ui.keyCode.ESCAPE:
+            if(!editing || !grijq['currentEditor']) {
               return;
             }
-            var index = target.prevAll().length;
+            var value = grijq['currentEditor'].unedit(grijq['selectedCell']);
+            grijq['currentEditor'] = null;
+            grijq['selectedCell'].focus();
+            break;
+          case $.ui.keyCode.DOWN:
+          case $.ui.keyCode.ENTER:
+            var index = target.closest('td').prevAll().length;
             var tr = target.closest('tr').next();
             tr.children().prop('tabindex', '0');
             $(tr.children()[index]).focus();
@@ -392,7 +394,7 @@
             grijq['currentEditor'].edit(target, editor['options']);
             break;
           default:
-            if(grijq.options.readonly || editing || e.ctrlKey || target.hasClass('readonly') || target.parent().hasClass('readonly')) {
+            if(grijq.options.readonly || editing || e.ctrlKey || e.metaKey || target.hasClass('readonly') || target.parent().hasClass('readonly')) {
               return;
             }
             if((e.keyCode >= A && e.keyCode <= Z) || (e.keyCode >= ZERO && e.keyCode <= NINE) || (e.keyCode >= NUM_ZERO && e.keyCode <= NUM_NINE) || e.keyCode === DOT || e.keyCode === NUM_DOT) {
