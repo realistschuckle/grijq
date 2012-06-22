@@ -84,8 +84,15 @@
         'number': {
           'edit': function(value, options) {
             var keyHandler = function(e) {
-              if(e.keyCode === $.ui.keyCode.TAB || e.keyCode === $.ui.keyCode.LEFT || e.keyCode === $.ui.keyCode.UP || e.keyCode === $.ui.keyCode.RIGHT || e.keyCode === $.ui.keyCode.DOWN || e.keyCode === $.ui.keyCode.BACKSPACE || e.keyCode === $.ui.keyCode.DELETE) {
-                return;
+              switch(e.keyCode) {
+                case $.ui.keyCode.TAB:
+                case $.ui.keyCode.LEFT:
+                case $.ui.keyCode.UP:
+                case $.ui.keyCode.RIGHT:
+                case $.ui.keyCode.DOWN:
+                case $.ui.keyCode.BACKSPACE:
+                case $.ui.keyCode.DELETE:
+                  return;
               }
               if((e.keyCode < ZERO || e.keyCode > NINE) && (e.keyCode < NUM_ZERO || e.keyCode > NUM_NINE) && e.keyCode !== DOT && e.keyCode !== DASH && e.keyCode !== NUM_DOT) {
                 e.preventDefault();
@@ -310,9 +317,10 @@
         var target = $(e.target);
         switch(e.keyCode) {
           case $.ui.keyCode.TAB:
-            if(!e.shiftKey && (e.target.nodeName.toLowerCase() === 'td' || (editing && target.closest('td').next().length === 0)) && typeof grijq.options.newrow === 'function' && target.next().length === 0 && target.parent().next().length === 0) {
+            var td = target.closest('td');
+            if(!e.shiftKey && (e.target.nodeName.toLowerCase() === 'td' || (editing && td.next().length === 0)) && typeof grijq.options.newrow === 'function' && td.next().length === 0 && td.parent().next().length === 0) {
               grijq.options.newrow();
-              target.parent().next().children().prop('tabindex', 0);
+              td.parent().next().children().prop('tabindex', 0);
             }
             break;
           case $.ui.keyCode.LEFT:
