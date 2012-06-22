@@ -15,6 +15,7 @@
         'date': {
           'edit': function(value, options) {
             var input = $('<input>').val(value);
+            var wrapper = $('<div>').append(input);
             input.datepicker({
               onSelect: function() {
                 var date = input.datepicker('getDate');
@@ -24,16 +25,20 @@
               }
             });
             return {
-              element: input,
+              element: wrapper,
               afterAppend: function() {
                 input.select();
                 input.focus();
+                var horizPad = 2 * parseInt(input.css('padding-left'));
+                var vertPad = 2 * parseInt(input.css('padding-top'));
+                input.height(wrapper.height() - vertPad);
+                input.width(wrapper.width() - horizPad);
                 input.datepicker('show');
               }
             };
           },
-          'unedit': function(input) {
-            var date = new Date(input.val());
+          'unedit': function(wrapper) {
+            var date = new Date(wrapper.children().val());
             return $.datepicker.formatDate('m/d/yy', date);
           }
         },
@@ -44,23 +49,29 @@
                 e.stopPropagation();
               }
             });
+            var wrapper = $('<div>').append(input);
             var source = options['source'];
             if(typeof window[source] !== 'undefined') {
               options['source'] = window[source];
             }
             return {
-              element: input,
+              element: wrapper,
               afterAppend: function() {
                 input.autocomplete(options);
                 input.select();
                 input.focus();
+                var horizPad = 2 * parseInt(input.css('padding-left'));
+                var vertPad = 2 * parseInt(input.css('padding-top'));
+                input.height(wrapper.height() - vertPad);
+                input.width(wrapper.width() - horizPad);
                 if(!target.attr('data-bind')) {
                   setTimeout(function() {input.autocomplete('search');}, 10);
                 }
               }
             };
           },
-          'unedit': function(input) {
+          'unedit': function(wrapper) {
+            var input = wrapper.children().first();
             var text = input.val();
             input.autocomplete('destroy');
             return text;
@@ -69,16 +80,21 @@
         'text': {
           'edit': function(value, options) {
             var input = $('<input>').val(value);
+            var wrapper = $('<div>').append(input);
             return {
-              element: input,
+              element: wrapper,
               afterAppend: function() {
                 input.select();
                 input.focus();
+                var horizPad = 2 * parseInt(input.css('padding-left'));
+                var vertPad = 2 * parseInt(input.css('padding-top'));
+                input.height(wrapper.height() - vertPad);
+                input.width(wrapper.width() - horizPad);
               }
             };
           },
-          'unedit': function(input) {
-            return input.val();
+          'unedit': function(wrapper) {
+            return wrapper.children().val();
           }
         },
         'number': {
@@ -99,11 +115,16 @@
               }
             };
             var input = $('<input>').val(value).keydown(keyHandler);
+            var wrapper = $('<div>').append(input);
             return {
-              element: input,
+              element: wrapper,
               afterAppend: function() {
                 input.select();
                 input.focus();
+                var horizPad = 2 * parseInt(input.css('padding-left'));
+                var vertPad = 2 * parseInt(input.css('padding-top'));
+                input.height(wrapper.height() - vertPad);
+                input.width(wrapper.width() - horizPad);
                 setTimeout(function() {
                   if(isNaN(+input.val())) {
                     input.val('');
@@ -112,8 +133,8 @@
               }
             };
           },
-          'unedit': function(input) {
-            return parseFloat(input.val());
+          'unedit': function(wrapper) {
+            return parseFloat(wrapper.children().val());
           }
         }
       }
