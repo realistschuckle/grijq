@@ -433,7 +433,9 @@
       var editor = this['currentEditor'].edit(value, editorSpec['options'])
       this['currentEditorEl'] = editor.element || editor
       editing = true;
-      this['currentEditorEl'].width(target.width()).height(target.height());
+      this['currentEditorEl']
+        .width(target.outerWidth() - parseInt(target.css('border-right')))
+        .height(target.outerHeight() - parseInt(target.css('border-bottom')));
       target.addClass('editing').children().hide();
       target.append(this['currentEditorEl']);
       if(typeof editor.afterAppend == 'function') {
