@@ -13,10 +13,8 @@
     , ie = /*@cc_on!@*/0
     , editors = {
         'date': {
-          'edit': function(target, options) {
-            target.addClass('editing');
-            var input = $('<input>').val(target.text()).width(target.width() - 12);
-            target.children().hide().end().append(input);
+          'edit': function(value, options) {
+            var input = $('<input>').val(value);
             input.datepicker({
               onSelect: function() {
                 var date = input.datepicker('getDate');
@@ -25,77 +23,66 @@
                 input.focus();
               }
             });
-            input.select();
-            input.focus();
-            input.datepicker('show');
+            return {
+              element: input,
+              afterAppend: function() {
+                input.select();
+                input.focus();
+                input.datepicker('show');
+              }
+            };
           },
-          'unedit': function(target) {
-            editing = false;
-            target.removeClass('editing');
-            var input = target.children().last();
-            if(input.length === 0) {
-              return;
-            }
+          'unedit': function(input) {
             var date = new Date(input.val());
-            date = $.datepicker.formatDate('m/d/yy', date);
-            input.remove();
-            target.children().show();
-            return date;
+            return $.datepicker.formatDate('m/d/yy', date);
           }
         },
         'autocomplete': {
-          'edit': function(target, options) {
-            target.addClass('editing');
-            var input = $('<input>').val(target.text()).width(target.width() - 12);
+          'edit': function(value, options) {
+            var input = $('<input>').val(value).keydown(function(e) {
+              if(e.keyCode === $.ui.keyCode.DOWN || e.keyCode === $.ui.keyCode.UP) {
+                e.stopPropagation();
+              }
+            });
             var source = options['source'];
             if(typeof window[source] !== 'undefined') {
               options['source'] = window[source];
             }
-            target.children().hide().end().append(input);
-            input.autocomplete(options);
-            input.select();
-            input.focus();
-            if(!target.attr('data-bind')) {
-              setTimeout(function() {input.autocomplete('search');}, 10);
-            }
+            return {
+              element: input,
+              afterAppend: function() {
+                input.autocomplete(options);
+                input.select();
+                input.focus();
+                if(!target.attr('data-bind')) {
+                  setTimeout(function() {input.autocomplete('search');}, 10);
+                }
+              }
+            };
           },
-          'unedit': function(target) {
-            editing = false;
-            target.removeClass('editing');
-            var input = target.children().last();
-            if(input.length === 0) {
-              return;
-            }
+          'unedit': function(input) {
             var text = input.val();
             input.autocomplete('destroy');
-            input.remove();
-            target.children().show();
             return text;
           }
         },
         'text': {
-          'edit': function(target) {
-            target.addClass('editing');
-            var input = $('<input>').val(target.text()).width(target.width() - 12);
-            target.children().hide().end().append(input);
-            input.select();
-            input.focus();
+          'edit': function(value, options) {
+            var input = $('<input>').val(value);
+            return {
+              element: input,
+              afterAppend: function() {
+                input.select();
+                input.focus();
+              }
+            };
           },
-          'unedit': function(target) {
-            editing = false;
-            target.removeClass('editing');
-            var input = target.children().last();
-            if(input.length === 0) {
-              return;
-            }
-            var text = input.val();
-            input.remove();
-            target.children().show();
-            return text;
+          'unedit': function(input) {
+            return input.val();
           }
         },
         'number': {
-          'edit': function(target) {
+          'edit': function(value, options) {
             var keyHandler = function(e) {
               if(e.keyCode === $.ui.keyCode.TAB || e.keyCode === $.ui.keyCode.LEFT || e.keyCode === $.ui.keyCode.UP || e.keyCode === $.ui.keyCode.RIGHT || e.keyCode === $.ui.keyCode.DOWN || e.keyCode === $.ui.keyCode.BACKSPACE || e.keyCode === $.ui.keyCode.DELETE) {
                 return;
@@ -104,30 +91,22 @@
                 e.preventDefault();
               }
             };
-            target.addClass('editing');
-            var input = $('<input>').val(target.text())
-                                    .width(target.width() - 12)
-                                    .keydown(keyHandler);
-            target.children().hide().end().append(input);
-            input.select();
-            input.focus();
-            setTimeout(function() {
-              if(isNaN(+input.val())) {
-                input.val('');
+            var input = $('<input>').val(value).keydown(keyHandler);
+            return {
+              element: input,
+              afterAppend: function() {
+                input.select();
+                input.focus();
+                setTimeout(function() {
+                  if(isNaN(+input.val())) {
+                    input.val('');
+                  }
+                }, 0);
               }
-            }, 0);
+            };
           },
-          'unedit': function(target) {
-            editing = false;
-            target.removeClass('editing');
-            var input = target.children().last();
-            if(input.length === 0) {
-              return;
-            }
-            var text = input.val();
-            input.remove();
-            target.children().show();
-            return parseFloat(text);
+          'unedit': function(input) {
+            return parseFloat(input.val());
           }
         }
       }
@@ -268,11 +247,7 @@
           if(grijq.options.readonly || editing || target.hasClass('readonly') || target.parent().hasClass('readonly')) {
             return;
           }
-          editing = true;
-          var index = target.prevAll().length;
-          var editor = grijq.options.columns[index];
-          grijq['currentEditor'] = grijq.options.editors[editor['type']];
-          grijq['currentEditor'].edit(target, editor['options']);
+          grijq._edit(target);
         });
 
       // timings.push(['setting widths', new Date()]);
@@ -371,8 +346,7 @@
             if(!editing || !grijq['currentEditor']) {
               return;
             }
-            var value = grijq['currentEditor'].unedit(grijq['selectedCell']);
-            grijq['currentEditor'] = null;
+            grijq._unedit();
             grijq['selectedCell'].focus();
             break;
           case $.ui.keyCode.DOWN:
@@ -383,26 +357,12 @@
             $(tr.children()[index]).focus();
             e.preventDefault();
             break;
-          case F2:
-            if(grijq.options.readonly || editing || target.hasClass('readonly') || target.parent().hasClass('readonly')) {
-              return;
-            }
-            editing = true;
-            var index = target.prevAll().length;
-            var editor = grijq.options.columns[index];
-            grijq['currentEditor'] = grijq.options.editors[editor['type']];
-            grijq['currentEditor'].edit(target, editor['options']);
-            break;
           default:
             if(grijq.options.readonly || editing || e.ctrlKey || e.metaKey || target.hasClass('readonly') || target.parent().hasClass('readonly')) {
               return;
             }
-            if((e.keyCode >= A && e.keyCode <= Z) || (e.keyCode >= ZERO && e.keyCode <= NINE) || (e.keyCode >= NUM_ZERO && e.keyCode <= NUM_NINE) || e.keyCode === DOT || e.keyCode === NUM_DOT) {
-              editing = true;
-              var index = target.prevAll().length;
-              var editor = grijq.options.columns[index];
-              grijq['currentEditor'] = grijq.options.editors[editor['type']];
-              grijq['currentEditor'].edit(target, editor['options']);
+            if((e.keyCode >= A && e.keyCode <= Z) || (e.keyCode >= ZERO && e.keyCode <= NINE) || (e.keyCode >= NUM_ZERO && e.keyCode <= NUM_NINE) || e.keyCode === DOT || e.keyCode === NUM_DOT || e.keyCode === F2) {
+              grijq._edit(target.closest('td'));
             }
             break;
         }
@@ -446,8 +406,7 @@
         this['selectedColumn'].removeClass('ui-state-default');
       }
       if(this['currentEditor']) {
-        var value = this['currentEditor'].unedit(this['selectedCell']);
-        this['currentEditor'] = null;
+        var value = this._unedit();
         this._trigger('editcomplete', null, {val: value, cell: this['selectedCell']});
       }
       if(this['selectedRow']) {
@@ -456,6 +415,33 @@
       if(this['selectedCell']) {
         this['selectedCell'].removeClass('ui-state-active');
       }
+    },
+    _edit: function(target) {
+      var index = target.prevAll().length
+        , value = target.children().first().text()
+        , editorSpec = this.options.columns[index]
+        ;
+      this['currentEditor'] = this.options.editors[editorSpec['type']]
+      var editor = this['currentEditor'].edit(value, editorSpec['options'])
+      this['currentEditorEl'] = editor.element || editor
+      editing = true;
+      this['currentEditorEl'].width(target.width()).height(target.height());
+      target.addClass('editing').children().hide();
+      target.append(this['currentEditorEl']);
+      if(typeof editor.afterAppend == 'function') {
+        editor.afterAppend();
+      } 
+    },
+    _unedit: function() {
+      editing = false;
+      var target = this['selectedCell'];
+      target.removeClass('editing');
+      this['currentEditorEl'].remove();
+      var value = this['currentEditor'].unedit(this['currentEditorEl']);
+      this['currentEditor'] = null;
+      this['currentEditorEl'] = null;
+      target.children().show();
+      return value;
     },
     _setOption: function(key, value) {
       $.Widget.prototype._setOption.apply(this, arguments);
