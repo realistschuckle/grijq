@@ -45,7 +45,6 @@
     <script src="../javascripts/jquery-ui-1.8.21.min.js"></script>
     <script src="../javascripts/jquery.ui.grijq-0.2.4.js"></script>
     <script src="../javascripts/data.js"></script>
-    <script type="text/javascript" src="http://jqueryui.com/themeroller/themeswitchertool/"></script>
     <script>
       $(function() {
         $('#the-code').hide();
@@ -58,14 +57,6 @@
           $(this).html('See the code');
           $('#the-code').hide('blind');
         });
-        $('#switcher')
-          .themeswitcher()
-          .height(40)
-          .width(152)
-          .css({
-            margin: 'auto',
-            'line-height': 1
-          });
         $('#clear-choice').button().click(function() {
           $.cookie('jquery-ui-theme', null);
           location.href = location.href;
@@ -111,13 +102,6 @@
         </p>
         <div class="yui3-cssreset yui3-cssfonts center">
           <button id="mkeditable">Make editable grid from table</button>
-        </div>
-        <p>
-          Don't like the theme? You can change that, too.
-        </p>
-        <div class="yui3-cssreset yui3-cssfonts center">
-          <div id="switcher" class="ui-helper-reset"></div>
-          <button id="clear-choice">Clear theme</button>
         </div>
       </header>
       <section class="yui3-cssreset yui3-cssfonts">
