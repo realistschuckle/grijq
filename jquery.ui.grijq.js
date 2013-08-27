@@ -193,7 +193,7 @@
       grijq.scroller = $('<div class="ui-grijq-scroll"></div>');
       grijq.widget = $('<div class="ui-grijq"></div>').append(grijq.scroller);
       grijq.element
-        .addClass('ui-widget ui-widget-content')
+        .addClass('ui-widget')
         .after(grijq.widget)
         .children('thead')
           .addClass('ui-widget-header ui-state-default')
