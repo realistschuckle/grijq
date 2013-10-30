@@ -581,7 +581,7 @@
         },
         _init: function () {
         },
-		_destroy: function() {
+        _destroy: function() {
 			var grijq = this
 			  , element = grijq.element
 			  , wudget = element.closest('.ui-grijq')
