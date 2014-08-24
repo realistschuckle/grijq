@@ -87,3 +87,10 @@
 .ui-grijq .ui-widget-header .mover.ie {
   background-color: white;
 }
+
+.ui-grijq-sort {
+  position:absolute;
+  right:0;
+  top:0;
+  border:1px;
+}
